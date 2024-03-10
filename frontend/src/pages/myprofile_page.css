@@ -1,0 +1,226 @@
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #1d1d1d;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.content_container {
+    display: flex;
+    width: 954px;
+    height: 100vh;
+    position: relative;
+    background: #1d1d1d;
+}
+
+.profile_container {
+    position: absolute;
+    display: flex;
+    top: 37px;
+    width: 494px;
+    height: 374px;
+    background: #000000;
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+    justify-content: center;
+    text-align: center;
+}
+
+.profile_banner {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 494px;
+    height: 138px;
+    border-radius: 8px 8px 0px 0px;
+    object-fit: cover;
+}
+
+.profile_avatar {
+    position: absolute;
+    top: 78px;
+    left: 187px;
+    width: 128px;
+    height: 128px;
+    background: #A6F5FFFF;
+    opacity: 1;
+    overflow: hidden;
+    border-radius: 60px;
+}
+
+.avatar img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover; 
+  }
+
+.profile_name {
+    position: relative; 
+    top: 210px; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 20px; 
+    font-weight: 700; 
+    line-height: 30px; 
+    color: #FFFFFF;
+}
+
+.profile_bio {
+    position: absolute; 
+    top: 262px; 
+    left: 24px; 
+    width: 446px; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px; 
+    font-weight: 400; 
+    line-height: 20px; 
+    color: #FFFFFF; 
+}
+
+.edit_profile.button {
+    position: absolute; 
+    top: 314px; 
+    width: 445px; 
+    height: 36px; 
+    padding: 0 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-size: 14px; 
+    font-weight: 400; 
+    line-height: 22px; 
+    color: #FFFFFF; 
+    background: #A949F5;
+    opacity: 1; 
+    border: none; 
+    border-radius: 4px; 
+    gap: 6px; 
+}
+
+.edit_profile.button:hover {
+    background: #B661F9; 
+}
+
+.edit_profile.button:active {
+    background: #9B4CD9; 
+}
+
+.edit_profile.button:disabled {
+    opacity: 0.4; 
+}
+
+.edit_profile.button:focus {
+    outline: none;
+}
+
+.more_profile.button {
+    position: absolute; 
+    top: 314px; 
+    left: 434px; 
+    width: 36px; 
+    height: 36px; 
+    padding: 0 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: #FFFFFF; 
+    background: #3A353E; 
+    opacity: 1; 
+    border: none; 
+    border-radius: 4px; 
+    gap: 0px; 
+}
+  
+.more_profile.button:hover {
+    color: #565E6CFF; 
+    background: #DEE1E6FF;
+}
+  
+.more_profile.button:hover:active {
+    color: #565E6CFF; 
+    background: #CFD2DAFF; 
+}
+  
+.more_profile.button:disabled {
+    opacity: 0.4; 
+}
+
+.more_profile.button:focus {
+    outline: none;
+}
+
+.post_container {
+    position: absolute; 
+    top: 435px; 
+    width: 494px; 
+    max-height: calc(100vh - 435px); 
+    background: #000000;
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; 
+    align-items: center;
+}
+
+.post_container::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Opera */
+}
+
+.favorites_container {
+    position: absolute; 
+    top: 37px; 
+    width: 435px; 
+    height: 445px;
+    right: 0;  
+    background: #000000;
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+    justify-content: flex-start;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.favorites_header {
+    position: absolute; 
+    top: 20px; 
+    left: 30px; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 24px; 
+    font-weight: 700; 
+    line-height: 36px; 
+    color: #FFFFFF; 
+}
+
+.favorites_content {
+    display: flex;
+    position: absolute;
+    top: 75px;
+    left: 20px;
+    right: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.profile_movie-poster {
+    width: 111px;
+    height: 150px; 
+    margin: 10px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+.profile_movie-poster:hover {
+    transform: scale(1.05);
+}

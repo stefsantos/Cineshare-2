@@ -1,0 +1,127 @@
+
+.movie-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-width: 100%;
+    text-align: center;
+}
+
+.movie_header {
+    display: flex;
+    flex-shrink: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    flex-direction: column;
+    
+}
+
+.search-input {
+    width: 300px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    margin-right: 20px; 
+    color: white;
+    background-color: #000000;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+}
+
+.movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-width: 60vw;
+    margin-top: 130px;
+    
+}
+
+.movie-item {
+    width: 200px;
+    margin: 10px;
+    height: 500px;
+    border: 3px solid #000000;
+    border-radius: 5px;
+    overflow: hidden;
+    
+}
+
+.movie-image {
+    width: 100%;
+    height: auto;
+}
+
+.movie-details {
+    padding: 10px;
+    text-align: left;
+}
+
+.movie-details h3 {
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.movie-details p {
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.watchlist-button {
+    padding: 5px 10px;
+}
+
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.load-more-button {
+    background-color: #000000;
+    padding: 10px 20px;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+    color: white;
+}
+
+.watchlist-button {
+    padding: 5px 10px;
+    background-color: #A949F5;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.watchlist-button-added {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.movie-item {
+    width: 200px;
+    margin: 10px;
+    border: 1px solid #000000;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: transform 0.3s ease; 
+    display: inline-block; 
+}
+
+.movie-item:hover {
+    transform: scale(1.05); 
+    z-index: 10; 
+}
+
+
+

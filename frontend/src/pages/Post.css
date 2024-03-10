@@ -1,0 +1,93 @@
+
+
+.post {
+    border: 0px solid rgb(98, 98, 98);
+    padding: 10px;
+    margin: 10px;
+    width: 95%;
+    max-width: 800px;
+    box-sizing: border-box;
+    text-align: left;
+    border-radius: 10px;
+    background-color: #101720;
+    color: rgb(255, 255, 255);
+    flex-direction: column;
+    display: flex;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+    margin-top: 25px;
+}
+
+.post-movie {
+    color: #d39cff;
+}
+
+.post img {
+    max-width: 100%; 
+    height: auto;
+    display: block; 
+    margin: 0 auto;
+}
+
+.post-username {
+    color: rgb(255, 255, 255);
+}
+
+.post-username:hover {
+
+    color: rgb(140, 159, 254);
+}
+
+.post-movie {
+
+    color: #ca8dfc;
+
+}
+
+.post-movie:hover {
+
+    color: #bc6dfc;
+
+}
+
+.postactions {
+    display: flex; 
+    justify-content: start; 
+    align-items: center; 
+}
+
+.heart, .comment, .share {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-image: url('sprites2.png'); 
+    cursor: pointer;
+    width: 24px; 
+    height: 24px; 
+    background-size: 411px 393px;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
+
+.heart {
+    background-position: -25px -318px; 
+    margin-right: 5px;
+}
+
+.heart-active {
+    background-position: 0 -318px;
+}
+
+.comment {
+    background-position: -125px -294px; 
+    margin-right: 5px;
+}
+
+.share {
+    background-position: -175px -294px; 
+    margin-left: auto;
+}
+
+.heart:hover, .comment:hover, .share:hover {
+    opacity: 0.7;
+}
+
