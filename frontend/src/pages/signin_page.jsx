@@ -1,8 +1,8 @@
 import React, { useState, useLayoutEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@chakra-ui/react";
+import { useToast, Spinner } from "@chakra-ui/react"; // Ensure Spinner is imported
 import { useUser } from '../../src/UserContext';
-import './signin_page.css'; 
+import './signin_page.css';
 import logo from '../assets/CineShare Logo Request.webp';
 
 function SigninPage({ setShowNavbar }) {
@@ -12,6 +12,7 @@ function SigninPage({ setShowNavbar }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false); // Use for tracking loading state
 
     useLayoutEffect(() => {
         setShowNavbar(false);
@@ -29,7 +30,7 @@ function SigninPage({ setShowNavbar }) {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        
+        setIsLoading(true); // Start loading
         try {
             const res = await fetch("/api/users/login", {
                 method: "POST",
@@ -58,7 +59,6 @@ function SigninPage({ setShowNavbar }) {
                 navigateHome();
                 localStorage.setItem("user-info", JSON.stringify(data));
             }
-
         } catch (error) {
             console.error('An error occurred:', error);
             toast({
@@ -68,6 +68,8 @@ function SigninPage({ setShowNavbar }) {
                 duration: 3000,
                 isClosable: true,
             });
+        } finally {
+            setIsLoading(false); // End loading
         }
     };
 
@@ -102,7 +104,9 @@ function SigninPage({ setShowNavbar }) {
                                     required
                                 />
                             </div>
-                            <button type="submit" className="signin-button">Sign In</button>
+                            <button type="submit" className="signin-button" disabled={isLoading}>
+                                {isLoading ? (<Spinner size="sm" />) : 'Sign In'}
+                            </button>
                         </form>
                     </div>
 

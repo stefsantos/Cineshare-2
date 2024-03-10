@@ -181,5 +181,4 @@ const updateUser = async (req, res) => {
 };
 
 
-
 export { getUserProfile, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser };
