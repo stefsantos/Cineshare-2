@@ -31,7 +31,7 @@ function SigninPage({ setShowNavbar }) {
         event.preventDefault();
         
         try {
-            const res = await fetch("/api/users/signin", {
+            const res = await fetch("/api/users/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -79,30 +79,33 @@ function SigninPage({ setShowNavbar }) {
             <div className="signin-container">
                 <div className="login-container">
                     <h2>Sign In</h2>
-                    <form className="login-form" onSubmit={handleLogin}>
-                        <div className="input-group">
-                            <label htmlFor="email">Email</label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder="example@gmail.com"
-                            />
-                        </div>
-                        <div className="input-group">
-                            <label htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <button onClick= {navigateHome} type="submit" className="signin-button">Sign In</button>
-                    </form>
+                    <div className="login-form">
+                        <form onSubmit={handleLogin}>
+                            <div className="input-group">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="example@gmail.com"
+                                />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="password">Password</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <button type="submit" className="signin-button">Sign In</button>
+                        </form>
+                    </div>
+
                     <div className="signup-link">
                         No account yet?{" "}
                         <button onClick={navigateCreateAccount} className="text-button">
