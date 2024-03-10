@@ -1,7 +1,6 @@
 import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 
-
 const createPost = async (req, res) => {
     try {
         const { movie, text, image } = req.body;
