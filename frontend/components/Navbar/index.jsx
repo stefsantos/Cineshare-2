@@ -51,7 +51,7 @@ const Navbar = () => {
                     </NavLink>
                     <NavLink to="/friends_page">
                         <FaUserFriends style={{ marginRight: '8px' }} />
-                        Friends
+                        Connections
                     </NavLink>
                     <NavLink to="/watchlist_page">
                         <FaList style={{ marginRight: '8px' }} />
