@@ -29,19 +29,11 @@ function friends_page() {
   const { activeusername } = useUser();
   const [friendRequests, setFriendRequests] = useState(friendRequestsData);
 
-  const handleAccept = (id) => {
-    setFriendRequests((prevRequests) => prevRequests.filter((request) => request.id !== id));
-  };
-
-  const handleDecline = (id) => {
-    setFriendRequests((prevRequests) => prevRequests.filter((request) => request.id !== id));
-  };
-
     return (
         <div className="page_container">
             <div className="friends_container">
                 <div className="friends_header">
-                    Friends
+                    Followers
                     <div className="textbox">
                         <FaSearch style={{ marginLeft: '10px', marginRight: '10px', height: '36px' }} />
                         <input type="text" placeholder="Search..." />
@@ -65,7 +57,7 @@ function friends_page() {
                 </div>
             </div>
       <div className="request_container">
-        <div className="request_header">Friend Requests</div>
+        <div className="request_header">Following</div>
         <div className="friendrequest_container">
           {friendRequests.map((request) => (
             ((activeusername !== 'Charles White' && activeusername !== 'Mutahar Anas' && request.name === 'Mutahar Anas') || (activeusername === 'Mutahar Anas' && request.id >= 2 && request.id !== 5)) && (
@@ -73,28 +65,11 @@ function friends_page() {
                 <img src={request.avatar} alt="avatar" className="request_avatar" />
                 <div className="request_text">
                   <div className="request_name">{request.name}</div>
-                  <div className="mutual_box">
-                    {Array.from({ length: request.mutualContacts }).map((_, index) => (
-                      <img key={index} src="images/moist.png" alt="avatar" className="mutual_avatar" />
-                    ))}
-                    <div className="mutual_text">{request.mutualContacts} Mutual Contacts</div>
-                  </div>
                 </div>
                 <button
-                  className="decline_button"
-                  onClick={() => {
-                    handleDecline(request.id);
-                  }}
-                >
-                  Decline
-                </button>
-                <button
                   className="accept_button"
-                  onClick={() => {
-                    handleAccept(request.id);
-                  }}
                 >
-                  Accept
+                  Visit Profile
                 </button>
               </div>
             )

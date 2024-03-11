@@ -1,5 +1,5 @@
 import React from "react";
-import "./editprofile_Tab.css";
+import "./editprofile_tab.css";
 
 
 const EditProfileTab = ({ isVisible, onClose }) => {

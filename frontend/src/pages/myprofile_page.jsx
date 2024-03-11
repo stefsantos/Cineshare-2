@@ -45,6 +45,8 @@ function MyProfilePage() {
         fetchTrendingMovies();
     }, [activeusername]); // This effect depends on activeusername and runs on mount and whenever activeusername changes
 
+    
+
     const toggleEditProfileTab = () => {
         setIsEditProfileTabVisible(!isEditProfileTabVisible);
     };

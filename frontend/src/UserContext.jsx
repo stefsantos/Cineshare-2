@@ -3,10 +3,13 @@ import React, { createContext, useContext, useState } from 'react';
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [activeusername, setUsername] = useState('defaultUsername');
+  const [activeusername, setUsername] = useState(() => {
+    return localStorage.getItem('activeusername') || 'defaultUsername';
+  });
 
   const updateUser = (newUsername) => {
     setUsername(newUsername);
+    localStorage.setItem('activeusername', newUsername);
   };
 
   return (
