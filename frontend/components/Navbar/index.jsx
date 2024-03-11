@@ -67,7 +67,7 @@ const Navbar = () => {
                 <LogoutContainer>
                 <NavLink to="/myprofile_page">
                     <img 
-                        src={activeusername ? `images/${activeusername}.png` : `images/defaultAvatar.jpg`} 
+                        src={activeusername ? `images/${activeusername}.jpg` : `images/defaultAvatar.jpg`} 
                         onError={(e) => { e.target.onerror = null; e.target.src = 'images/defaultAvatar.jpg'; }}
                         height="75"
                         style={{
