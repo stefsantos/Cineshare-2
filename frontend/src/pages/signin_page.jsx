@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-import { useToast, Spinner } from "@chakra-ui/react"; // Ensure Spinner is imported
+import { useToast, Spinner } from "@chakra-ui/react";
 import { useUser } from '../../src/UserContext';
 import './signin_page.css';
 import logo from '../assets/CineShare Logo Request.webp';
@@ -12,7 +12,8 @@ function SigninPage({ setShowNavbar }) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false); // Use for tracking loading state
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     useLayoutEffect(() => {
         setShowNavbar(false);
@@ -30,7 +31,8 @@ function SigninPage({ setShowNavbar }) {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
+    
         try {
             const res = await fetch("/api/users/login", {
                 method: "POST",
@@ -39,39 +41,32 @@ function SigninPage({ setShowNavbar }) {
                 },
                 body: JSON.stringify({ email, password })
             });
-
-            if (!res.ok) {
-                throw new Error('Server responded with a status: ' + res.status);
+    
+            if (res.status === 500) {
+                // if server is not reachable
+                throw new Error('Server responded with a status: 500 Internal Server Error');
             }
-
+    
             const data = await res.json();
-
-            if (data.error) {
-                toast({
-                    title: "Error",
-                    description: data.error,
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                });
+    
+            if (res.status === 400) {
+                // wrong password or other client-side error
+                setErrorMessage("Incorrect Email or Password");
             } else {
+                // successful login
                 userContext.updateUser(data.username);
                 navigateHome();
                 localStorage.setItem("user-info", JSON.stringify(data));
             }
         } catch (error) {
+            // if server is not reachable
             console.error('An error occurred:', error);
-            toast({
-                title: "Error",
-                description: error.toString(),
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-            });
+            setErrorMessage("An error has occurred");
         } finally {
-            setIsLoading(false); // End loading
+            setIsLoading(false);
         }
     };
+    
 
     return (
         <div className="signin-fullscreen">
@@ -103,7 +98,13 @@ function SigninPage({ setShowNavbar }) {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
+                            {errorMessage && (
+                                <div className="error-message" style={{ color: 'red' }}>
+                                    {errorMessage}
+                                </div>
+                            )}
                             </div>
+
                             <button type="submit" className="signin-button" disabled={isLoading}>
                                 {isLoading ? (<Spinner size="sm" />) : 'Sign In'}
                             </button>
