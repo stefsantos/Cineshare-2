@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './myprofile_page.css';
 import { Link, useParams } from 'react-router-dom';
-import EditProfileTab from '../../src/pages/editprofile_tab';
 import Post from './Post';
 import { useUser } from '../../src/UserContext';
 
@@ -17,9 +16,10 @@ const profileAvatars = {
   function profile2_page() {
     const [trendingMovies, setTrendingMovies] = React.useState([]);
     const { username } = useParams();
-    const [isEditProfileTabVisible, setIsEditProfileTabVisible] = useState(false);
     const { activeusername } = useUser();
     const [userProfile, setUserProfile] = useState({});
+    const [activeProfile, setActiveProfile] = useState({});
+    const [isFollowing, setIsFollowing] = useState(true);
     console.log('Username:', username);
     console.log('Active Username:', activeusername);
 
@@ -50,21 +50,28 @@ const profileAvatars = {
                 console.error("Error fetching user profile:", error);
             }
         };
+
+        const fetchActiveProfile = async () => {
+            try {
+                const response = await fetch(`/api/users/profile/${activeusername}`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("user: ", data);
+                setActiveProfile(data); 
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
         
+        fetchActiveProfile();
         fetchUserProfile();
         fetchTrendingMovies();
     }, []);
 
 
-    const toggleEditProfileTab = () => {
-        setIsEditProfileTabVisible(!isEditProfileTabVisible);
-    };
-
-    const handleEditProfileClick = (event) => {
-        event.preventDefault();
-        toggleEditProfileTab();
-    };
-
+    
     const [posts, setPosts] = React.useState([
         { id: 1, user: username, movie: '(500) Days of Summer', movieId: '19913', content: 'I love 500 days of summer it makes me sad LOL.', timestamp: '2024-22-02' },
         { id: 2, user: username, movie: 'Her', movieId: '152601', content: 'Its so over :((', timestamp: '2024-16-02' },
@@ -73,25 +80,42 @@ const profileAvatars = {
         { id: 5, user: username, movie: 'About Time', movieId: '122906', content: 'WE ARE SO UP GRAH!', imageUrl: 'https://i.redd.it/t5dmyn6ll49a1.jpg', timestamp: '2024-01-02' },
     ]);
 
-    const isCurrentUser = activeusername === username;
+    useEffect(() => {
+        setIsFollowing(userProfile.followers && userProfile.followers.includes(activeProfile._id));
+        console.log("Set: ", isFollowing);
+    }, [userProfile, activeProfile]);
 
-    const renderEditProfileButton = () => {
-        if (isCurrentUser == 0) 
-        {
-            if (userProfile.followers && userProfile.followers.includes(activeusername))
-            {
-                return <button className="button edit_profile">✓ Already Following</button>;
-            }
-            
-            else
-            {
-                return <button className="button edit_profile">Follow</button>;
-            }
-        }
+    const renderOtherProfileButton = () => {
+        return <button className="button edit_profile" onClick={handleFollowUnfollow}>
+                    {isFollowing ? 'Unfollow' : 'Follow'}
+                </button>;
     };
 
+    const handleFollowUnfollow = async() => {
+        try {
+            const res = await fetch(`/api/users/follow/${userProfile._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            })
+
+            const data = await res.json();
+            setIsFollowing(!isFollowing);
+            console.log(data);
+
+            if (data.error) 
+            {
+                console.log("Error");
+            }
+
+        } catch (error) {
+            console.log("Error");
+        }
+    }
+
     return (
-            <div className="page">
+        <div className="page">
             <div className="content_container">
                 <div className="profile_container">
                     <img src={userProfile.banner || 'images/defaultAvatar.jpg'} className="profile_banner" alt={username} />
@@ -100,7 +124,7 @@ const profileAvatars = {
                     <div className="profile_name">{username}</div>
                     <div className="profile_bio">{userProfile.bio || 'No bio available'}</div>
         
-                    {renderEditProfileButton()}
+                    {renderOtherProfileButton()}
                 </div>
                 
                 <div className="post_container">
@@ -129,8 +153,6 @@ const profileAvatars = {
                     </div>
                 </div>
             </div>
-
-            {isEditProfileTabVisible && <EditProfileTab isVisible={isEditProfileTabVisible} onClose={toggleEditProfileTab} />}
         </div>
         
     );
