@@ -227,12 +227,18 @@
 
 .button.edit_profile .unfollow-status {
     display: none;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .button.edit_profile:hover .unfollow-status {
     display: inline;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .button.edit_profile:hover .follow-status {
     display: none;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
