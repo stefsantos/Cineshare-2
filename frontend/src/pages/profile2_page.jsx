@@ -87,8 +87,18 @@ const profileAvatars = {
 
     const renderOtherProfileButton = () => {
         return <button className="button edit_profile" onClick={handleFollowUnfollow}>
-                    {isFollowing ? 'Unfollow' : 'Follow'}
-                </button>;
+                    {isFollowing ? (
+                        <>
+                            <span className="follow-status">Following</span>
+                            <span className="unfollow-status">Unfollow</span>
+                        </>
+                    ) : (
+                        <>
+                            <span className="follow-status">Follow</span>
+                            <span className="unfollow-status">Follow</span>
+                        </>
+                    )}
+                </button>
     };
 
     const handleFollowUnfollow = async() => {

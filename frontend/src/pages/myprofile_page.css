@@ -224,3 +224,15 @@
 .profile_movie-poster:hover {
     transform: scale(1.05);
 }
+
+.button.edit_profile .unfollow-status {
+    display: none;
+}
+
+.button.edit_profile:hover .unfollow-status {
+    display: inline;
+}
+
+.button.edit_profile:hover .follow-status {
+    display: none;
+}
