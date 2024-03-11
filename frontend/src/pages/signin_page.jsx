@@ -99,7 +99,7 @@ function SigninPage({ setShowNavbar }) {
                                     required
                                 />
                             {errorMessage && (
-                                <div className="error-message" style={{ color: 'red' }}>
+                                <div className="error-message" style={{ color: 'red', textAlign: 'left'}}>
                                     {errorMessage}
                                 </div>
                             )}

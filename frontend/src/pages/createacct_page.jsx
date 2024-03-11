@@ -7,10 +7,11 @@ import { useToast, Spinner } from "@chakra-ui/react";
 function CreateAcctPage({ setShowNavbar }) {
     const navigate = useNavigate();
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordError, setPasswordError] = useState(false); // New state for password error
+    const [passwordError, setPasswordError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const toast = useToast();
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const navigateSignIn = () => {
         navigate('/signin_page');
@@ -23,25 +24,21 @@ function CreateAcctPage({ setShowNavbar }) {
         password: "",
     });
 
+
     const handleSignUp = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-
+    
         if (inputs.password !== confirmPassword) {
-            setIsLoading(false); // Stop the loading animation
-            setPasswordError(true); // Set password error state to true
-            toast({
-                title: "Error",
-                description: "Passwords do not match",
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-            });
+            setIsLoading(false);
+            setPasswordError(true);
+            setErrorMessage("Passwords do not match");
             return;
         } else {
-            setPasswordError(false); // Ensure password error is cleared if they now match
+            setPasswordError(false);
+            setErrorMessage(null);
         }
-
+    
         try {
             const res = await fetch("/api/users/signup", {
                 method: "POST",
@@ -50,33 +47,25 @@ function CreateAcctPage({ setShowNavbar }) {
                 },
                 body: JSON.stringify(inputs)
             });
-
+            console.log(res);
             if (!res.ok) {
-                throw new Error('Server responded with a status: ' + res.status);
-            }
-
-            let data = await res.json();
-
-            if (data.error) {
-                toast({
-                    title: "Error",
-                    description: data.error,
-                    status: "error",
-                    duration: 3000,
-                    isClosable: true,
-                });
+                if (res.status === 400) {
+                    setErrorMessage("Username/Email is already in use");
+                } else {
+                    throw new Error('Server responded with a status: ' + res.status);
+                }
             } else {
-                navigateSignIn();
-                localStorage.setItem("user-info", JSON.stringify(data));
+                let data = await res.json();
+    
+                if (data.error) {
+                    setErrorMessage(data.error);
+                } else {
+                    navigateSignIn();
+                    localStorage.setItem("user-info", JSON.stringify(data));
+                }
             }
         } catch (error) {
-            toast({
-                title: "Error",
-                description: error.toString(),
-                status: "error",
-                duration: 3000,
-                isClosable: true,
-            });
+                setErrorMessage("An error has occurred");
         } finally {
             setIsLoading(false);
         }
@@ -135,10 +124,10 @@ function CreateAcctPage({ setShowNavbar }) {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
-                        </div>
-                        {passwordError && (
-                            <div style={{ color: 'red', marginTop: '10px' }}>Passwords do not match.</div>
+                        {errorMessage && (
+                            <div style={{ color: 'red', textAlign: 'left'}}>{errorMessage}</div>
                         )}
+                        </div>
                         <button type="submit" className="signup-button" disabled={isLoading}>
                             {isLoading ? <Spinner /> : 'Create Account'}
                         </button>
