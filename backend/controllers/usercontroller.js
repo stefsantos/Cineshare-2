@@ -19,6 +19,41 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+const getUserFollowers = async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await User.findOne({ username }).select("-password -updatedAt");
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const followers = await User.find({ _id: { $in: user.followers } }).select("_id username profilepic");
+
+        res.status(200).json(followers);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.log("Error in getUserFollowers: ", error.message);
+    }
+};
+
+const getUserFollowing = async (req, res) => {
+    const { username } = req.params;
+    try {
+        const user = await User.findOne({ username }).select("-password -updatedAt");
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const following = await User.find({ _id: { $in: user.following } }).select("_id username profilepic");
+
+        res.status(200).json(following);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+        console.log("Error in getUserFollowing: ", error.message);
+    }
+};
+
+
 const signupUser = async (req, res) => {
     try {   
         const { username, email, password } = req.body;
@@ -181,4 +216,4 @@ const updateUser = async (req, res) => {
 };
 
 
-export { getUserProfile, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser };
+export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser };
