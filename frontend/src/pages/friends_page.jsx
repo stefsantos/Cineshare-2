@@ -71,39 +71,55 @@ function friends_page() {
                     </div>
                 </div>
 
-                <div className="friendprofiles_container">
-                  {userFollowers.map((follower) => (
-                    <div key={follower.id} className="friend_profile">
-                      <img
-                          src={follower.profilepic ? `images/${follower.profilepic}.jpg` : `images/defaultAvatar.jpg`}
-                          alt="avatar"
-                          className="friend_avatar"
-                      />
-                      <div className="friend_name" title={follower.username}>
-                        {follower.username}
+                  {userFollowers.length === 0 ? (
+                    <div className="message-container">
+                      <div className="no-followers-message">
+                        No Followers.
                       </div>
-                      <Link to={`/profile/${follower.username}`} className="visit_button">Visit</Link>
                     </div>
-                  ))}
-                </div>
+                  ) : (
+                    <div className="friendprofiles_container">
+                        {userFollowers.map((follower) => (
+                            <div key={follower.id} className="friend_profile">
+                                <img
+                                    src={follower.profilepic ? `images/${follower.profilepic}.jpg` : `images/defaultAvatar.jpg`}
+                                    alt="avatar"
+                                    className="friend_avatar"
+                                />
+                                <div className="friend_name" title={follower.username}>
+                                    {follower.username}
+                                </div>
+                                <Link to={`/profile/${follower.username}`} className="visit_button">Visit</Link>
+                            </div>
+                        ))}
+                    </div>
+                  )}
             </div>
 
             <div className="request_container">
               <div className="request_header">Following</div>
                 <div className="friendrequest_container">
-                  {userFollowing.map((following) => (
+                {userFollowing.length === 0 ? (
+                <div className="message-container">
+                    <div className="no-following-message">
+                        No Following.
+                    </div>
+                </div>
+                ) : (
+                  userFollowing.map((following) => (
                       <div key={following.id} className="friend_request">
                           <img
-                                src={following.profilepic ? `images/${following.profilepic}.jpg` : `images/defaultAvatar.jpg`}
-                                alt="avatar"
-                                className="request_avatar"
-                            />
+                              src={following.profilepic ? `images/${following.profilepic}.jpg` : `images/defaultAvatar.jpg`}
+                              alt="avatar"
+                              className="request_avatar"
+                          />
                           <div className="request_text">
                               <div className="request_name">{following.username}</div>
                           </div>
                           <Link to={`/profile/${following.username}`} className="accept_button">Visit</Link>
-                      </div>
-                  ))}
+                      </div>  
+                    ))
+                  )}
                 </div>
             </div>
     </div>

@@ -19,6 +19,7 @@ const profileAvatars = {
     const { username } = useParams();
     const [isEditProfileTabVisible, setIsEditProfileTabVisible] = useState(false);
     const { activeusername } = useUser();
+    const [userProfile, setUserProfile] = useState({});
     console.log('Username:', username);
     console.log('Active Username:', activeusername);
 
@@ -35,7 +36,22 @@ const profileAvatars = {
                 console.error("Error fetching trending movies:", error);
             }
         };
+
+        const fetchUserProfile = async () => {
+            try {
+                const response = await fetch(`/api/users/profile/${username}`); 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("user: ", data);
+                setUserProfile(data); 
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
         
+        fetchUserProfile();
         fetchTrendingMovies();
     }, []);
 
@@ -60,43 +76,31 @@ const profileAvatars = {
     const isCurrentUser = activeusername === username;
 
     const renderEditProfileButton = () => {
-        if (isCurrentUser==0 && username !== 'Mutahar Anas') {
-            return <button className="button edit_profile">✓ Already Friends</button>;
-        }
-
-        else if (isCurrentUser==0 && username === 'Mutahar Anas' && activeusername === 'Charles White')
+        if (isCurrentUser == 0) 
         {
-            return <button className="button edit_profile">✓ Already Friends</button>;
-        }
-
-        else if (isCurrentUser==0 && username === 'Mutahar Anas' && activeusername !== 'Charles White')
-        {
-            return <button className="button edit_profile">Send Friend Request</button>;
-        }
-        
-        else {
-            return <button className="button edit_profile" onClick={handleEditProfileClick}>Edit Profile</button>;
+            if (userProfile.followers && userProfile.followers.includes(activeusername))
+            {
+                return <button className="button edit_profile">✓ Already Following</button>;
+            }
+            
+            else
+            {
+                return <button className="button edit_profile">Follow</button>;
+            }
         }
     };
 
     return (
             <div className="page">
             <div className="content_container">
-            <div className="profile_container">
-                {profileAvatars[username] && (
-                <img src={profileAvatars[username]} className="profile_banner" alt={username} />
-                )}
-    
-                {profileAvatars[username] && (
-                <img src={profileAvatars[username]} className="profile_avatar avatar" alt={username} />
-                )}
-    
-                <div className="profile_name">{username}</div>
-                <div className="profile_bio">I am CCS ID 122</div>
-    
-                {renderEditProfileButton()}
-
-                    
+                <div className="profile_container">
+                    <img src={userProfile.banner || 'images/defaultAvatar.jpg'} className="profile_banner" alt={username} />
+                    <img src={userProfile.profilepic || 'images/defaultAvatar.jpg'} className="profile_avatar avatar" alt={username} />
+        
+                    <div className="profile_name">{username}</div>
+                    <div className="profile_bio">{userProfile.bio || 'No bio available'}</div>
+        
+                    {renderEditProfileButton()}
                 </div>
                 
                 <div className="post_container">
