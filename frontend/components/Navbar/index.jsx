@@ -65,17 +65,22 @@ const Navbar = () => {
                 </NavMenu>
 
                 <LogoutContainer>
-                    <NavLink to="/myprofile_page">
-                        <img src={activeusername ? `images/${activeusername}.png` : 'images/defaultAvatar.jpg'} height="75"
-                            style={{
-                                borderRadius: '50%',
-                                width: '75px',
-                                height: '75px',
-                                objectFit: 'cover'
-                            }}
-                            alt="Profile"
-                        />
-                    </NavLink>
+                <NavLink to="/myprofile_page">
+                    <img 
+                        src={activeusername ? `images/${activeusername}.png` : `images/defaultAvatar.jpg`} 
+                        onError={(e) => { e.target.onerror = null; e.target.src = 'images/defaultAvatar.jpg'; }}
+                        height="75"
+                        style={{
+                            borderRadius: '50%',
+                            width: '75px',
+                            height: '75px',
+                            objectFit: 'cover'
+                        }}
+                        alt="Profile"
+                    />
+                </NavLink>
+
+
                     <button onClick={handleLogout} style={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: 'white', fontSize: '20px' }}>
                         ⎗ Logout
                     </button>
