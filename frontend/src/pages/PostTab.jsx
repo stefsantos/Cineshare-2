@@ -1,38 +1,80 @@
 import React, { useState, useEffect } from "react";
 import "./PostTab.css";
+import { useUser } from '../UserContext';
 
 const PostTab = ({ isVisible, onClose }) => {
   if (!isVisible) return null;
 
-  const [files, setFiles] = useState([]);
-  const [fileInputLabel, setFileInputLabel] = useState("Upload Image(s)");
+  const { userId } = useUser();
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedMovieId, setSelectedMovieId] = useState('');
+  const [selectedMovieTitle, setSelectedMovieTitle] = useState('');
+  const [postText, setPostText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleFileChange = (event) => {
-    const selectedFiles = event.target.files;
-    setFiles(selectedFiles);
-    const fileNames = Array.from(selectedFiles)
-      .map(file => file.name)
-      .join(', ');
-    setFileInputLabel(fileNames || "Upload Image(s)");
+  const handleCreatePost = async () => {
+    if (!postText.trim() || !selectedMovieId) {
+      setError('Please provide both a movie and your thoughts.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+
+    const postBody = JSON.stringify({
+      content: postText.trim(),
+      movie: selectedMovieTitle,
+      movieId: selectedMovieId,
+      // You might need to adjust handling for the user ID and image URL depending on your backend
+      // postedBy: userId, // Consider handling user identification on the server-side
+    });
+
+    try {
+      const response = await fetch('/api/posts/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Include authorization headers if required
+        },
+        body: postBody,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Failed to create post');
+      }
+
+      const data = await response.json();
+      console.log('Post created:', data);
+      onClose(); // Optionally close the modal on successful creation
+    } catch (error) {
+      setError(error.message || 'An error occurred while creating the post.');
+      console.error('Error creating post:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
-    if (searchTerm.length > 2) {
-      const apiKey = '3c4682174e03411b1f2ea9d887d0b8f3';
-      const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(searchTerm)}`;
-
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
+    const fetchMovies = async () => {
+      if (searchTerm.length > 2) {
+        try {
+          const apiKey = '3c4682174e03411b1f2ea9d887d0b8f3'; // Use your actual API key
+          const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(searchTerm)}`;
+          const response = await fetch(url);
+          const data = await response.json();
           setSuggestions(data.results);
-        })
-        .catch(error => console.error('Error fetching movie suggestions:', error));
-    } else {
-      setSuggestions([]);
-    }
+        } catch (error) {
+          console.error('Error fetching movie suggestions:', error);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    };
+
+    fetchMovies();
   }, [searchTerm]);
 
   const handleSearchChange = (event) => {
@@ -40,9 +82,14 @@ const PostTab = ({ isVisible, onClose }) => {
   };
 
   const selectMovie = (movie) => {
-    setSearchTerm(movie.title); // Update the input field with the movie's title
-    setSelectedMovieId(movie.id); // Store the selected movie's ID
-    setSuggestions([]); // Clear suggestions
+    setSearchTerm(movie.title);
+    setSelectedMovieId(movie.id);
+    setSelectedMovieTitle(movie.title);
+    setSuggestions([]);
+  };
+
+  const handlePostTextChange = (event) => {
+    setPostText(event.target.value);
   };
 
   return (
@@ -71,22 +118,21 @@ const PostTab = ({ isVisible, onClose }) => {
             </ul>
           )}
           {selectedMovieId && <div className="selected-movie-id">Selected Movie ID: {selectedMovieId}</div>}
-          <textarea className="modal-input" placeholder="What about it?"></textarea>
-          <label htmlFor="file-upload" className="file-upload-label">
-            {fileInputLabel}
-          </label>
-          <input
-            id="file-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            multiple
-            style={{ display: 'none' }}
-          />
+          <textarea
+            className="modal-input"
+            placeholder="What about it?"
+            value={postText}
+            onChange={handlePostTextChange}
+          ></textarea>
+          {error && <div className="error-message">{error}</div>}
         </div>
         <div className="modal-footer">
           <button className="button cancel-button" onClick={onClose}>Cancel</button>
-          <button className="button create-button" onClick={onClose} type="submit">Create</button>
+          {isLoading ? (
+            <div className="loading-animation">Loading...</div>
+          ) : (
+            <button className="button create-button" onClick={handleCreatePost}>Create</button>
+          )}
         </div>
       </div>
     </div>

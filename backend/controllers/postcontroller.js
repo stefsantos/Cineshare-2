@@ -3,40 +3,48 @@ import Post from "../models/postModel.js";
 
 const createPost = async (req, res) => {
     try {
-        const { movie, text, image } = req.body;
+        // Destructure the expected fields from req.body
+        const { movie, movieId, content, imageUrl } = req.body;
 
-        if (!text) {
-            return res.status(400).json({ message: "Invalid post data" });
+        // Check if content is provided
+        if (!content) {
+            return res.status(400).json({ message: "Content is required" });
         }
 
+        // Check if the user exists
         const user = await User.findById(req.user._id);
         if (!user) {
             return res.status(400).json({ message: "User does not exist" });
         }
 
+        // Optional: Check content length
         const maxLength = 500;
-        if (text.length > maxLength) {
-            return res.status(400).json({ message: `Post text must be ${maxLength} characters or less` });
+        if (content.length > maxLength) {
+            return res.status(400).json({ message: `Post content must be ${maxLength} characters or less` });
         }
 
+        // Create a new post
         let newPost = new Post({
-            postedBy: req.user._id, // Use the logged-in user's ID as the postedBy
+            postedBy: req.user._id, // Assuming req.user._id is available through the protectRoute middleware
             movie,
-            text,
-            image
+            movieId,
+            content,
+            imageUrl: imageUrl || '', // Default to an empty string if imageUrl is not provided
         });
 
+        // Save the new post to the database
         await newPost.save();
 
+        // Populate the postedBy field to return the username in the response
         newPost = await Post.findById(newPost._id).populate('postedBy', 'username');
 
+        // Send the created post as a response
         res.status(201).json({ message: "Post created", post: newPost });
-        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server Error" });
     }
-}
+};
 
 const getPost = async (req, res) => {
     try {
@@ -110,36 +118,34 @@ const likeUnlikePost = async (req, res) => {
 }
 
 const replyToPost = async (req, res) => {
-   
     try {
-        const {text} = req.body;
+        const { content } = req.body; // Updated to use `content` instead of `text`
         const postId = req.params.id;
         const userId = req.user._id;
-        const userProfilePic = req.user.profilepic;
+        const userProfilePic = req.user.profilepic; // Ensure this aligns with your User schema
         const username = req.user.username;
 
-        if (!text) {
+        if (!content) {
             return res.status(400).json({ message: "Invalid reply data" });
         }
 
         const post = await Post.findById(postId);
 
         if (!post) {
-            return res.status(404).json({ message: "post not found" });
+            return res.status(404).json({ message: "Post not found" });
         }
 
-        const reply = {userId, text, userProfilePic, username};
+        const reply = { userId, text: content, userProfilePic, username };
 
         post.replies.push(reply);
         await post.save();
 
-        res.status(201).json({ message: "reply added", post });
+        res.status(201).json({ message: "Reply added", post });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-
-}
+};
 
 const getAllFeedPosts = async (req, res) => {
     try {

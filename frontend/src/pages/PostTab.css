@@ -70,7 +70,6 @@
 
 .create-button:hover {
     background-color: #a747f5;
-    color: rgb(255, 255, 255);
 }
 
 .cancel-button {
@@ -79,23 +78,31 @@
 }
 
 .file-upload-label {
-    background-color: rgb(82, 53, 139); 
-    color: white; 
-    display: inline-block; 
-    padding: 8px 16px; 
-    margin-bottom: 10px; 
+    background-color: rgb(82, 53, 139);
+    color: white;
+    display: inline-block;
+    padding: 8px 16px;
+    margin-bottom: 10px;
     border-radius: 4px;
-    cursor: pointer; 
-    text-align: center; 
+    cursor: pointer;
+    text-align: center;
     width: 100%;
-    box-sizing: border-box; 
+    box-sizing: border-box;
 }
 
 .file-upload-label:hover {
-    background-color: #8e3ad2; 
+    background-color: #8e3ad2;
 }
 
-/* New styles for movie suggestions dropdown */
+.loading-animation {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #9b3fe7;
+    color: white;
+    border-radius: 4px;
+    cursor: default; /* Disables pointer to indicate loading */
+}
+
 .suggestions-list {
     list-style: none;
     margin: 0;
@@ -103,19 +110,22 @@
     background-color: #fff;
     color: #333;
     position: absolute;
-    width: calc(30% - 32px); /* Adjust width based on parent padding */
+    width: calc(30% - 32px);
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #ddd;
     border-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    z-index: 1001; /* Ensure it sits above other content */
+    z-index: 1001;
 }
 
 .suggestion-item {
     padding: 8px 16px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .suggestion-item:last-child {
@@ -132,16 +142,11 @@
     margin-top: 8px;
 }
 
-.suggestion-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .suggestion-poster {
+.suggestion-poster {
     width: 30px;
     height: 45px;
     object-fit: cover;
     border-radius: 4px;
-  }
+}
+
   

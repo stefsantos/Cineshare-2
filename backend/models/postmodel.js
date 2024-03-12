@@ -1,66 +1,52 @@
 import mongoose from 'mongoose';
 
-const postSchema = mongoose.Schema({
-
+const postSchema = new mongoose.Schema({
     postedBy: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
-        
     },
-
     movie: {
         type: String,
         required: true
     },
-
-    text: {
+    movieId: {
+        type: Number,
+        required: true
+    },
+    content: {
         type: String,
         required: true  
     },
-
-    image: {
-        type: String
+    imageUrl: {
+        type: String,
+        default: ''
     },
-
     likes: {
         type: [String],
         default: []
     },
-
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
-
-
-
-    replies: [
-        {
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                required: true,
-                ref: 'User'
-            },
-            text: {
-                type: String,
-                required: true
-            },
-            createdAt: {
-                type: Date,
-                default: Date.now
-            },
-            userProfilePic: {
-                type: String
-            },
-            username: {
-                type: String
-            }
+    replies: [{
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: 'User'
+        },
+        text: {
+            type: String,
+            required: true
+        },
+        userProfilePic: {
+            type: String,
+            default: ''
+        },
+        username: {
+            type: String,
+            default: ''
         }
-    ]
-
+    }]
 }, {
-    timestamps: true
+    timestamps: true // This enables createdAt and updatedAt fields automatically
 });
 
 const Post = mongoose.model('Post', postSchema);
