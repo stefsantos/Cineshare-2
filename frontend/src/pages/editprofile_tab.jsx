@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import "./editprofile_tab.css";
 
-
 const EditProfileTab = ({ isVisible, onClose }) => {
+  const [bio, setBio] = useState("");
+
+  const handleSaveChanges = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/users/update/self}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bio: bio,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error updating user bio");
+      }
+
+      onClose();
+    } catch (error) {
+      console.error("Error saving changes:", error.message);
+    }
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -10,13 +33,24 @@ const EditProfileTab = ({ isVisible, onClose }) => {
       <div className="modal">
         <div className="modal-header">
           <h2>Edit Profile</h2>
-          <button className="close-button" onClick={onClose}>&times;</button>
+          <button className="close-button" onClick={onClose}>
+            &times;
+          </button>
         </div>
         <div className="modal-content">
-          <input className="modal-input" type="text" placeholder="Change Profile Name" />
-          <textarea className="modal-input" placeholder="Change Bio"></textarea>
+          <input
+            className="modal-input"
+            type="text"
+            placeholder="Change Profile Name"
+          />
+          <textarea
+            className="modal-input"
+            placeholder="Change Bio"
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          ></textarea>
           <div>
-          <h2>Set Favorites</h2>
+            <h2>Set Favorites</h2>
           </div>
           <div className="grid-3x3">
             <button className="grid-item">+</button>
@@ -28,13 +62,17 @@ const EditProfileTab = ({ isVisible, onClose }) => {
           </div>
         </div>
         <div className="modal-footer">
-          <button className="button cancel-button" onClick={onClose}>Cancel</button>
-          <button className="button create-button" onClick={onClose} type="submit">Save Changes</button>
+          <button className="button cancel-button" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className="button create-button" onClick={handleSaveChanges} type="button">
+            Save Changes
+          </button>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default EditProfileTab;
