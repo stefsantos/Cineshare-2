@@ -51,12 +51,18 @@ function Post({ post }) {
     const closeShare = () => {
         setShowShare(false);
     };
+
+    const handleReloadClick = () => {
+        setTimeout(() => {
+          window.location.reload();
+        }, 10); 
+      };
     
     return (
         <div className = "post">
             <h4>
                 {post.user === activeusername ? (
-                    <Link to={`/myprofile_page`} className="post-username" onClick={() => window.location.reload()}>
+                    <Link to={`/myprofile_page`} className="post-username" onClick={handleReloadClick}>
                         {post.user} 
                     </Link>
                 ) : (
