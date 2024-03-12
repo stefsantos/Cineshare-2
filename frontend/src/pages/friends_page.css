@@ -397,4 +397,16 @@
     text-align: center;
     align-items: center;
 }
+
+.search-button {
+    border-radius: 4px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+}
+
+.search-button:focus {
+    outline: none;
+}
   
