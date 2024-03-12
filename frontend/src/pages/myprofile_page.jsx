@@ -8,10 +8,10 @@ import { useUser } from '../../src/UserContext';
 function MyProfilePage() {
     const { activeusername } = useUser();
     const [userProfile, setUserProfile] = useState({});
-    const [trendingMovies, setTrendingMovies] = useState([]);
     const [isEditProfileTabVisible, setIsEditProfileTabVisible] = useState(false);
     const [posts, setPosts] = useState([]);
-
+    const [favoriteMovies, setFavoriteMovies] = useState([{ id: "1096197" }, {id:"438631"}, {id:"787699"}]);
+    
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -21,21 +21,13 @@ function MyProfilePage() {
                 }
                 const data = await response.json();
                 setUserProfile(data);
+                const favoriteMovies = data.favMovies.map(id => ({ id }));
+                
+                setUserProfile(data);
+                setFavoriteMovies(favoriteMovies);
+                console.log("FavMovies test:", favoriteMovies);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
-            }
-        };
-
-        const fetchTrendingMovies = async () => {
-            try {
-                const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setTrendingMovies(data.results);
-            } catch (error) {
-                console.error("Error fetching trending movies:", error);
             }
         };
 
@@ -52,9 +44,39 @@ function MyProfilePage() {
             }
         };
 
+        const fetchMoviePoster = async (movieId) => {
+            try {
+                const apiKey = '3c4682174e03411b1f2ea9d887d0b8f3';
+                const response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const posterPath = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
+                console.log("Poster Path:", posterPath);
+                return posterPath;
+            } catch (error) {
+                console.error("Error fetching movie poster:", error);
+                return null;
+            }
+        };
+        
+        const fetchMoviePosters = async () => {
+            const updatedMovies = await Promise.all(
+                favoriteMovies.map(async (movie) => {
+                    const posterPath = await fetchMoviePoster(movie.id);
+                    console.log("Movie ID:", movie.id, "Poster Path:", posterPath);
+                    return { ...movie, poster_path: posterPath };
+                })
+            );
+            console.log("Updated Movies:", updatedMovies);
+            setFavoriteMovies(updatedMovies);
+        };
+
         fetchUserProfile();
-        fetchTrendingMovies();
         fetchUserPosts();
+        fetchMoviePosters(); //this is somehow getting executed first before profile thats why no picture
+
     }, [activeusername]);
 
     const toggleEditProfileTab = () => {
@@ -85,17 +107,17 @@ function MyProfilePage() {
                             movie: post.movie,
                             content: post.content,
                             imageUrl: post.imageUrl,
-                            timestamp: new Date(post.createdAt).toLocaleDateString() // Adjust the date format as per your needs
+                            timestamp: new Date(post.createdAt).toLocaleDateString()
                         }} />
                     ))}
                 </div>
 
                 <div className="favorites_container">
-                    <div className="favorites_header">Top 6 Favorites</div>
+                    <div className="favorites_header">Favorite Movies</div>
                     <div className="favorites_content">
-                        {trendingMovies.slice(0, 6).map(movie => (
+                        {favoriteMovies.map(movie => (
                             <Link to={`/movie/${movie.id}`} key={movie.id}>
-                                <img className="profile_movie-poster" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+                                <img className="profile_movie-poster" src={movie.poster_path || 'placeholder.jpg'} alt={movie.title} />
                             </Link>
                         ))}
                     </div>
