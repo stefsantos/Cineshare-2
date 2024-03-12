@@ -39,11 +39,11 @@ function Post({ post }) {
         <div className = "post">
             <h4>
                 {post.user === activeusername ? (
-                    <Link to={`/myprofile_page`} className="post-username">
+                    <Link to={`/myprofile_page`} className="post-username" onClick={() => window.location.reload()}>
                         {post.user} 
                     </Link>
                 ) : (
-                    <Link to={`/profile/${post.user}`} className="post-username">
+                    <Link to={`/profile/${post.user}`} className="post-username" onClick={() => window.location.reload()}>
                         {post.user} 
                     </Link>
                 )}
