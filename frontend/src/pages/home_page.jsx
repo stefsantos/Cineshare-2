@@ -1,9 +1,7 @@
-import React from 'react';
 import Post from './Post';
 import './HomePage.css';
 import { Link } from 'react-router-dom';
-import {useState, useEffect} from 'react';
-
+import React, {useState, useEffect} from 'react';
 
 
 function HomePage() {
@@ -11,6 +9,7 @@ function HomePage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [trendingMovies, setTrendingMovies] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetchTrendingMovies();
@@ -33,18 +32,20 @@ function HomePage() {
     const fetchFollowedUsersPosts = async () => {
         setLoading(true);
         try {
-            const response = await fetch('/api/posts/friendfeed'); 
+            const response = await fetch('/api/posts/allfeed'); 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            setPosts(data);
+            setPosts(data.feedPosts);
         } catch (error) {
             console.error("Error fetching posts:", error);
+            setError("Error fetching posts. Please try again later.")
         } finally {
             setLoading(false);
         }
     };
+    
     
     
     
@@ -59,14 +60,14 @@ function HomePage() {
                 <center>
                 <div className='content'>
                     <div className='userposts'>
-                        {loading ? (
-                            <p>Loading posts...</p>
-                        ) : (
-                            posts.map(post => (
-                                <Post key={post.id} post={post} />
-                            ))
-                        )}
-                    </div>
+                            {loading ? (
+                                <p>Loading posts...</p>
+                            ) : (
+                                posts.map(post => (
+                                    <Post key={post._id} post={post} />
+                                ))
+                            )}
+                        </div>
                     <div className='rightsidebar'>
                         <div className='sidetitle'>🔥Popular Movies</div>
                         <div className='sidebarcontent'>

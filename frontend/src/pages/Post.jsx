@@ -11,23 +11,6 @@ function Post({ post }) {
     const [isHeartActive, setIsHeartActive] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [showShare, setShowShare] = useState(false);
-    const [posts, setPosts] = useState([]);
-    const [loading, setLoading] = useState(false);
-    
-    useEffect(() => {
-        const getFeedPosts = async () => {
-            setLoading(true);
-            
-            try {
-                const response = await fetch('/api/posts/friendfeed');
-                const data = await res.json()
-            } catch (error) {
-
-            } finally {
-                setLoading(false);
-            }
-        }
-    })
     
     // Event handler for clicking the heart icon
     const toggleHeart = () => {
