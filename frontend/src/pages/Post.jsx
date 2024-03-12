@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom'
 import './Post.css';
 import CommentPopup from './CommentPopup';
 import SharePopup from './SharePopup';
+import { useUser } from '../../src/UserContext';
 
 function Post({ post }) {
-    
+    const { activeusername } = useUser();
     const [isHeartActive, setIsHeartActive] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [showShare, setShowShare] = useState(false);
@@ -37,15 +38,21 @@ function Post({ post }) {
     return (
         <div className = "post">
             <h4>
-                <Link to={`/profile/${post.user}`} className="post-username">
-                    {post.user} 
-                </Link>
-                {''} watched {''}
+                {post.user === activeusername ? (
+                    <Link to={`/myprofile_page`} className="post-username">
+                        {post.user} 
+                    </Link>
+                ) : (
+                    <Link to={`/profile/${post.user}`} className="post-username">
+                        {post.user} 
+                    </Link>
+                )}
+                {' watched '}
                 <Link to={`/movie/${post.movieId}`} className="post-movie">
                     {post.movie}
                 </Link>
-
             </h4>
+
             <p>{post.content}</p>
             {post.imageUrl && (
                 <img src={post.imageUrl} alt="Post visual" className="post-image" />
