@@ -43,7 +43,7 @@ function Post({ post }) {
                         {post.user} 
                     </Link>
                 ) : (
-                    <Link to={`/profile/${post.user}`} className="post-username" onClick={() => window.location.reload()}>
+                    <Link to={`/profile/${post.user}`} className="post-username">
                         {post.user} 
                     </Link>
                 )}
