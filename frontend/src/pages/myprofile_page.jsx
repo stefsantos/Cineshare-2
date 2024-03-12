@@ -10,19 +10,17 @@ function MyProfilePage() {
     const [userProfile, setUserProfile] = useState({});
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [isEditProfileTabVisible, setIsEditProfileTabVisible] = useState(false);
-    const [posts, setPosts] = useState([
-        // Initial posts data
-    ]);
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await fetch(`/api/users/profile/${activeusername}`); // Adjust the endpoint as necessary
+                const response = await fetch(`/api/users/profile/${activeusername}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 const data = await response.json();
-                setUserProfile(data); // Update state with fetched profile data
+                setUserProfile(data);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
             }
@@ -41,11 +39,23 @@ function MyProfilePage() {
             }
         };
 
+        const fetchUserPosts = async () => {
+            try {
+                const response = await fetch(`/api/posts/byUser/${activeusername}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setPosts(data.posts);
+            } catch (error) {
+                console.error("Error fetching user's posts:", error);
+            }
+        };
+
         fetchUserProfile();
         fetchTrendingMovies();
-    }, [activeusername]); // This effect depends on activeusername and runs on mount and whenever activeusername changes
-
-    
+        fetchUserPosts();
+    }, [activeusername]);
 
     const toggleEditProfileTab = () => {
         setIsEditProfileTabVisible(!isEditProfileTabVisible);
@@ -62,35 +72,30 @@ function MyProfilePage() {
                 <div className="profile_container">
                     <img src={userProfile.banner || 'images/defaultAvatar.jpg'} className="profile_banner" alt={activeusername} />
                     <img src={userProfile.profilepic || 'images/defaultAvatar.jpg'} className="profile_avatar avatar" alt={activeusername} />
-                    <div className="profile_name">
-                        {activeusername}
-                    </div>
-                    <div className="profile_bio">
-                        {userProfile.bio || 'No bio available'} {/* Fallback text in case bio is empty */}
-                    </div>
-                    <button className="button edit_profile" onClick={handleEditProfileClick}>
-                        Edit Profile
-                    </button>
+                    <div className="profile_name">{activeusername}</div>
+                    <div className="profile_bio">{userProfile.bio || 'No bio available'}</div>
+                    <button className="button edit_profile" onClick={handleEditProfileClick}>Edit Profile</button>
                 </div>
                 
                 <div className="post_container">
-                    {posts.map(post => (
-                        <Post key={post.id} post={post} />
+                    {posts.map((post, index) => (
+                        <Post key={index} post={{
+                            user: post.postedBy.username,
+                            movieId: post.movieId,
+                            movie: post.movie,
+                            content: post.content,
+                            imageUrl: post.imageUrl,
+                            timestamp: new Date(post.createdAt).toLocaleDateString() // Adjust the date format as per your needs
+                        }} />
                     ))}
                 </div>
 
                 <div className="favorites_container">
-                    <div className="favorites_header">
-                        Top 6 Favorites
-                    </div>
+                    <div className="favorites_header">Top 6 Favorites</div>
                     <div className="favorites_content">
                         {trendingMovies.slice(0, 6).map(movie => (
                             <Link to={`/movie/${movie.id}`} key={movie.id}>
-                                <img
-                                    className="profile_movie-poster"
-                                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                    alt={movie.title}
-                                />
+                                <img className="profile_movie-poster" src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
                             </Link>
                         ))}
                     </div>

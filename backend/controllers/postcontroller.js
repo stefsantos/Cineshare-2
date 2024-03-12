@@ -187,4 +187,26 @@ const getFriendFeedPosts = async (req, res) => {
         
     }
 }
-export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts };
+
+const getUserPosts = async (req, res) => {
+    try {
+        const username = req.params.username; // Or use userID based on your preference
+        const user = await User.findOne({ username: username }); // Find the user by username
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const posts = await Post.find({ postedBy: user._id }).populate('postedBy', 'username').sort({ createdAt: -1 });
+        if (posts.length === 0) {
+            return res.status(404).json({ message: "No posts found for this user" });
+        }
+
+        res.json({ message: "Posts found", posts });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts, getUserPosts };
