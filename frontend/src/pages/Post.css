@@ -33,7 +33,7 @@
 }
 
 .post-username:hover {
-
+    text-decoration: underline;
     color: rgb(140, 159, 254);
 }
 
