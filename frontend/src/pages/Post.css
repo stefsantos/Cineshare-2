@@ -29,11 +29,11 @@
 }
 
 .post-username {
-    color: rgb(255, 255, 255);
+    color: rgb(35, 156, 184);
 }
 
 .post-username:hover {
-
+    text-decoration: underline;
     color: rgb(140, 159, 254);
 }
 
