@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = void 0;
+exports.getWatchlist = exports.checkWatchlist = exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = void 0;
 
 var _userModel = _interopRequireDefault(require("../models/userModel.js"));
 
@@ -632,3 +632,108 @@ var addToWatchlist = function addToWatchlist(req, res) {
 };
 
 exports.addToWatchlist = addToWatchlist;
+
+var checkWatchlist = function checkWatchlist(req, res) {
+  var movieId, userId, user, isInWatchlist;
+  return regeneratorRuntime.async(function checkWatchlist$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          _context10.prev = 0;
+          movieId = req.body.movieId; // Expecting movieId to be sent in the request body
+
+          userId = req.user._id; // Assuming you have middleware to set req.user
+
+          _context10.next = 5;
+          return regeneratorRuntime.awrap(_userModel["default"].findById(userId));
+
+        case 5:
+          user = _context10.sent;
+
+          if (user) {
+            _context10.next = 8;
+            break;
+          }
+
+          return _context10.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 8:
+          // Check if the movieId is in the user's watchlist
+          isInWatchlist = user.watchlist.includes(movieId); // Respond with the result
+
+          res.status(200).json({
+            isInWatchlist: isInWatchlist
+          });
+          _context10.next = 16;
+          break;
+
+        case 12:
+          _context10.prev = 12;
+          _context10.t0 = _context10["catch"](0);
+          console.error("Error in checkWatchlist:", _context10.t0.message);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 16:
+        case "end":
+          return _context10.stop();
+      }
+    }
+  }, null, null, [[0, 12]]);
+};
+
+exports.checkWatchlist = checkWatchlist;
+
+var getWatchlist = function getWatchlist(req, res) {
+  var userId, user;
+  return regeneratorRuntime.async(function getWatchlist$(_context11) {
+    while (1) {
+      switch (_context11.prev = _context11.next) {
+        case 0:
+          _context11.prev = 0;
+          userId = req.user._id; // Extract the user ID set by your authentication middleware
+          // Find the user by their ID
+
+          _context11.next = 4;
+          return regeneratorRuntime.awrap(_userModel["default"].findById(userId).select('watchlist'));
+
+        case 4:
+          user = _context11.sent;
+
+          if (user) {
+            _context11.next = 7;
+            break;
+          }
+
+          return _context11.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 7:
+          // Respond with the user's watchlist
+          res.status(200).json({
+            watchlist: user.watchlist
+          });
+          _context11.next = 14;
+          break;
+
+        case 10:
+          _context11.prev = 10;
+          _context11.t0 = _context11["catch"](0);
+          console.error("Error in getWatchlist:", _context11.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 14:
+        case "end":
+          return _context11.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+};
+
+exports.getWatchlist = getWatchlist;

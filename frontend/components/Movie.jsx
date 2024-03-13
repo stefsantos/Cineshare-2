@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Movie.css'; // Make sure this path is correct
+import './Movie.css'; // Ensure this path matches your file structure
 
 function Movie() {
     const [movieList, setMovieList] = useState([]);
@@ -10,15 +10,34 @@ function Movie() {
     const [url, setUrl] = useState('https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3');
     const [watchlist, setWatchlist] = useState({});
 
-    // Get today's date in YYYY-MM-DD format for API query
-    const today = new Date().toISOString().split('T')[0];
+    useEffect(() => {
+        const fetchWatchlist = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/watchlist', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        const watchlistMap = data.watchlist.reduce((acc, movieId) => {
+                            acc[movieId] = true;
+                            return acc;
+                        }, {});
+                        setWatchlist(watchlistMap);
+                    } else {
+                        throw new Error('Failed to fetch watchlist');
+                    }
+                } catch (error) {
+                    console.error('Error fetching watchlist:', error);
+                }
+            }
+        };
 
-    const categoryUrls = {
-        nowPlaying: 'https://api.themoviedb.org/3/movie/now_playing?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
-        popular: 'https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
-        toprated: 'https://api.themoviedb.org/3/movie/top_rated?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
-        upcoming: `https://api.themoviedb.org/3/discover/movie?api_key=3c4682174e03411b1f2ea9d887d0b8f3&primary_release_date.gte=${today}&sort_by=release_date.asc`
-    };
+        fetchWatchlist();
+    }, []);
 
     useEffect(() => {
         const getMovie = () => {
@@ -61,11 +80,50 @@ function Movie() {
         setMovieList([]);
     };
 
-    const handleAddToWatchlist = (movieId) => {
-        setWatchlist(prevWatchlist => ({
-            ...prevWatchlist,
-            [movieId]: !prevWatchlist[movieId]
-        }));
+    const handleAddToWatchlist = async (movieId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('User is not logged in');
+            return;
+        }
+
+        if (watchlist[movieId]) {
+            alert('Movie is already in watchlist.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/users/watchlist/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieId }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add movie to watchlist');
+            }
+
+            setWatchlist(prevWatchlist => ({
+                ...prevWatchlist,
+                [movieId]: true
+            }));
+
+            alert('Movie added to watchlist successfully!');
+        } catch (error) {
+            console.error('Error adding movie to watchlist:', error);
+            alert(error.message);
+        }
+    };
+
+    // Define your categoryUrls inside or outside the component
+    const categoryUrls = {
+        nowPlaying: 'https://api.themoviedb.org/3/movie/now_playing?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
+        popular: 'https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
+        toprated: 'https://api.themoviedb.org/3/movie/top_rated?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
+        upcoming: `https://api.themoviedb.org/3/discover/movie?api_key=3c4682174e03411b1f2ea9d887d0b8f3&primary_release_date.gte=${new Date().toISOString().split('T')[0]}&sort_by=release_date.asc`,
     };
 
     return (
@@ -80,10 +138,11 @@ function Movie() {
                     className="search-input"
                 />
                 <div className="filter-buttons">
-                    <button onClick={() => changeCategory('nowPlaying')}>Now Playing</button>
-                    <button onClick={() => changeCategory('popular')}>Popular</button>
-                    <button onClick={() => changeCategory('toprated')}>Top Rated</button>
-                    <button onClick={() => changeCategory('upcoming')}>Upcoming</button>
+                    {Object.keys(categoryUrls).map(category => (
+                        <button key={category} onClick={() => changeCategory(category)}>
+                            {category.charAt(0).toUpperCase() + category.slice(1).replace(/([A-Z])/g, ' $1').trim()}
+                        </button>
+                    ))}
                 </div>
             </div>
             <div className="movie-list">

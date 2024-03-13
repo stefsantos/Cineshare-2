@@ -237,8 +237,50 @@ const addToWatchlist = async (req, res) => {
         console.error("Error in addToWatchlist:", error);
         res.status(500).json({ message: "Server error" });
     }
+};  
+
+const checkWatchlist = async (req, res) => {
+    try {
+        const { movieId } = req.body; // Expecting movieId to be sent in the request body
+        const userId = req.user._id; // Assuming you have middleware to set req.user
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Check if the movieId is in the user's watchlist
+        const isInWatchlist = user.watchlist.includes(movieId);
+
+        // Respond with the result
+        res.status(200).json({ isInWatchlist });
+    } catch (error) {
+        console.error("Error in checkWatchlist:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const getWatchlist = async (req, res) => {
+    try {
+        const userId = req.user._id; // Extract the user ID set by your authentication middleware
+
+        // Find the user by their ID
+        const user = await User.findById(userId).select('watchlist');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Respond with the user's watchlist
+        res.status(200).json({ watchlist: user.watchlist });
+    } catch (error) {
+        console.error("Error in getWatchlist:", error);
+        res.status(500).json({ message: "Server error" });
+    }
 };
 
 
 
-export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist };
+
+export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist };
