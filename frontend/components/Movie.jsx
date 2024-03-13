@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Movie.css'; // Ensure this path matches your file structure
+import './Movie.css';
 
 function Movie() {
     const [movieList, setMovieList] = useState([]);
@@ -179,10 +179,9 @@ function Movie() {
                 throw new Error('Failed to add movie to favorites');
             }
     
-            // Update the state after successfully adding the movie to favorites
             setFavorites(prevFavorites => ({
                 ...prevFavorites,
-                [movieId]: true // Mark the movie as a favorite
+                [movieId]: true
             }));
     
             alert('Movie added to favorites successfully!');
@@ -192,7 +191,7 @@ function Movie() {
         }
     };
 
-    // Define your categoryUrls inside or outside the component
+
     const categoryUrls = {
         nowPlaying: 'https://api.themoviedb.org/3/movie/now_playing?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
         popular: 'https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
@@ -239,10 +238,10 @@ function Movie() {
                                 {watchlist[movie.id] ? 'Added to Watchlist' : 'Add to Watchlist'}
                             </button>
                             <button
-                                className={favorites[movie.id] ? "favorites-button-added" : "favorites-button"}
+                                className={favorites[movie.id] ? "favorite-button yellow-star" : "favorite-button"}
                                 onClick={() => handleAddToFavorites(movie.id)}
                             >
-                                {favorites[movie.id] ? 'Added to Favorites' : 'Add to Favorites'}
+                                {favorites[movie.id] ? '★' : '☆'}
                             </button>
                         </div>
                     </div>
