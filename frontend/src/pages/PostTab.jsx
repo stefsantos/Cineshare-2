@@ -46,6 +46,7 @@ const PostTab = ({ isVisible, onClose }) => {
         throw new Error(data.message || 'Failed to create post');
       }
 
+
       const data = await response.json();
       console.log('Post created:', data);
       onClose(); // Optionally close the modal on successful creation

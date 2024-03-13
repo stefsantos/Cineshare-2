@@ -3,14 +3,12 @@ import './HomePage.css';
 import { Link } from 'react-router-dom'
 import './Post.css';
 import CommentPopup from './CommentPopup';
-import SharePopup from './SharePopup';
 import { useUser } from '../../src/UserContext';
 
 function Post({ post }) {
     const { activeusername } = useUser();
     const [isHeartActive, setIsHeartActive] = useState(false);
     const [showComments, setShowComments] = useState(false);
-    const [showShare, setShowShare] = useState(false);
     
     // Event handler for clicking the heart icon
     const toggleHeart = () => {
@@ -27,13 +25,28 @@ function Post({ post }) {
         setShowComments(false);
     }
 
-    const openShare = () => {
-        setShowShare(true);
-    };
+    const handleDeletePost = async (e) => {
+        try {
+            console.log("POST ID: ", post);
 
-    const closeShare = () => {
-        setShowShare(false);
-    };
+            e.preventDefault();
+            if(!window.confirm('Are you sure you want to delete this post?')) return;
+
+            const res = await fetch(`api/posts/${post._id}`, {
+                method: 'DELETE',
+            });
+
+            const data = await res.json();
+            
+            if (data.error) {
+                console.log(data.error);
+                return;
+            }
+            console.log(data.message);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     const handleReloadClick = () => {
         setTimeout(() => {
@@ -66,11 +79,12 @@ function Post({ post }) {
             <div className='postactions'>
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
                 <div className='comment' onClick={openComments}></div>
-                <div className='share' onClick={openShare}></div>
+                {post.user === activeusername && (
+                    <div className='delete' onClick={handleDeletePost}></div>
+                )}
             </div>
             <small>{post.timestamp}</small>
             <CommentPopup isOpen={showComments} onClose={closeComments} post={post} />
-            <SharePopup isOpen={showShare} onClose={closeShare} post={post} />
         </div>
 
         

@@ -55,7 +55,7 @@
     align-items: center; 
 }
 
-.heart, .comment, .share {
+.heart, .comment, .delete {
     margin-top: 10px;
     margin-bottom: 10px;
     background-image: url('sprites2.png'); 
@@ -82,12 +82,12 @@
     margin-right: 5px;
 }
 
-.share {
-    background-position: -175px -294px; 
+.delete {
+    background-position: -150px -294px; 
     margin-left: auto;
 }
 
-.heart:hover, .comment:hover, .share:hover {
+.heart:hover, .comment:hover, .delete:hover {
     opacity: 0.7;
 }
 
