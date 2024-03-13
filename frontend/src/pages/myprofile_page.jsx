@@ -89,35 +89,6 @@ function MyProfilePage() {
         }
     };
 
-    const handleLikeToggle = async (postId) => {
-        try {
-            const response = await fetch(`/api/posts/like/${postId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to toggle like');
-            }
-
-            const postData = await response.json();
-            setPosts(prevPosts => prevPosts.map(post => {
-                if (post._id === postId) {
-                    return {
-                        ...post,
-                        likeCount: postData.likeCount,
-                        isLiked: !post.isLiked,
-                    };
-                }
-                return post;
-            }));
-        } catch (error) {
-            console.error('Error toggling like:', error);
-        }
-    };
-
     const toggleEditProfileTab = () => {
         setIsEditProfileTabVisible(!isEditProfileTabVisible);
     };
@@ -141,7 +112,6 @@ function MyProfilePage() {
                 <div className="post_container">
                     {posts.map((post, index) => (
                         <Post key={index} post={{
-                            _id: post._id,
                             user: post.postedBy.username,
                             movieId: post.movieId,
                             movie: post.movie,
