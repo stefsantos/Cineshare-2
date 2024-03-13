@@ -27,7 +27,7 @@ function Post({ post }) {
 
     const handleDeletePost = async (e) => {
         try {
-            console.log("POST ID: ", post);
+            console.log(post);
 
             e.preventDefault();
             if(!window.confirm('Are you sure you want to delete this post?')) return;
