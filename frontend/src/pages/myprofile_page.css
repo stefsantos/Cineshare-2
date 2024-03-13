@@ -201,12 +201,12 @@
 
 .favorites_content {
     display: flex;
-    position: relative;
+    position: absolute;
     top: 75px;
     left: 20px;
     right: 20px;
     flex-direction: row;
-    justify-content: flex-start;
+    justify-content: space-between;
     overflow: hidden;
     align-items: center;
     flex-wrap: wrap;
@@ -214,11 +214,8 @@
 
 .favorite-container {
     position: relative;
-    display: flex;
-    margin: 10px;
-    height: 155px;
-    width: 115px; 
-    overflow: hidden;
+    display: inline-block;
+    margin: 10px; 
 }
 
 .close-button {
@@ -234,8 +231,8 @@
 }
 
 .profile_movie-poster {
-    max-width: 100%; /* Adjust as needed */
-    max-height: 100%; /* Adjust as needed */
+    max-width: 20%; /* Adjust as needed */
+    max-height: 20%; /* Adjust as needed */
     margin: 10px;
     box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
     transition: transform 0.3s ease;
