@@ -11,6 +11,52 @@ function Post({ post }) {
     const [showComments, setShowComments] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likes?.length ?? 0);
     
+    useEffect(() => {
+        setIsHeartActive(post.likes?.includes(activeusername));
+        fetchLikeCount(); // Fetch the like count when the component mounts
+        const likeStatusInterval = setInterval(fetchLikeStatus, 1000); // Poll for like status every second
+        return () => clearInterval(likeStatusInterval);
+    }, [post.likes, activeusername]);
+
+    const fetchLikeStatus = async () => {
+        try {
+            const res = await fetch(`/api/posts/likes/status/${post._id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": `Bearer ${localStorage.getItem('token')}`
+            },
+        });
+
+        if (!response.ok) {
+            setIsHeartActive(data.isLiked);
+        } else {
+            throw new Error('Failed to fetch like status');
+        }
+        } catch (error) {
+            console.error('Error fetching like status:', error);
+        }
+    }
+
+    const fetchLikeCount = async () => {
+        try {
+            const response = await fetch(`/api/posts/likes/count/${post._id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    // Include Authorization header if your endpoint requires authentication
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setLikeCount(data.likeCount);
+            } else {
+                throw new Error('Failed to fetch like count');
+            }
+        } catch (error) {
+            console.error('Error fetching like count:', error);
+        }
+    };
+
     // Event handler for clicking the heart icon
     const toggleHeart = async () => {
 
@@ -29,8 +75,7 @@ function Post({ post }) {
             }
             console.log(data);
             
-            setIsHeartActive(data.message === "post liked");
-            setLikeCount(prevCount => data.message === "post liked" ? prevCount + 1 : prevCount - 1);
+            fetchLikeCount();
 
         } catch (error) {
             console.error("Error toggling like:", error);

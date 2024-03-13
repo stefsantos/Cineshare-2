@@ -239,5 +239,37 @@ const updatePost = async (req, res) => {
     }
 };
 
+const getLikeCount = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        res.status(200).json({ likeCount: post.likes.length });
+    } catch (error) {
+        console.error('Error fetching like count:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
 
-export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost};
+const getLikeStatus = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        const isLiked = post.likes.includes(userId);
+        res.status(200).json({ isLiked });
+    } catch (error) {
+        console.error('Error fetching like status:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+
+export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
+    getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost, 
+    getLikeCount, getLikeStatus};
