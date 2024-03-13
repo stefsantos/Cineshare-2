@@ -280,7 +280,36 @@ const getWatchlist = async (req, res) => {
     }
 };
 
+const deleteFromWatchlist = async (req, res) => {
+    try {
+        const { movieId } = req.body;
+        const userId = req.user._id;
+
+        if (!movieId) {
+            return res.status(400).json({ message: "Movie ID is required" });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $pull: { watchlist: movieId } },
+            { new: true, select: "-password" }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Movie removed from watchlist successfully",
+            watchlist: updatedUser.watchlist
+        });
+    } catch (error) {
+        console.error("Error in deleteFromWatchlist:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 
 
-export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist };
+
+export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist, deleteFromWatchlist };

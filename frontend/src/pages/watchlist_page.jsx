@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 
 function Watchlist() {
     const [movieList, setMovieList] = useState([]);
+    const [message, setMessage] = useState('');
+
 
     useEffect(() => {
         const fetchWatchlistMovies = async () => {
@@ -49,31 +51,71 @@ function Watchlist() {
             });
     };
 
-    const removeMovie = (id) => {
-        setMovieList(movieList.filter(movie => movie.id !== id));
-    };
+    const removeMovie = async (movieId) => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+          console.log('User is not logged in');
+          return;
+      }
+  
+      try {
+          const response = await fetch('/api/users/watchlist/delete', { // Adjust according to your actual endpoint
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({ movieId }),
+          });
+  
+          if (!response.ok) {
+              throw new Error('Failed to remove movie from watchlist');
+          }
+  
+          // Find the movie's title for the message
+          const movie = movieList.find(m => m.id === movieId);
+          const movieTitle = movie ? movie.title : 'The movie';
+  
+          // Refresh the watchlist or filter out the movie from the local state
+          setMovieList(currentMovieList => currentMovieList.filter(movie => movie.id !== movieId));
+  
+          // Set message
+          setMessage(`${movieTitle} removed from watchlist`);
+  
+          // Optionally clear the message after a few seconds
+          setTimeout(() => setMessage(''), 3000);
+      } catch (error) {
+          console.error('Error removing movie from watchlist:', error);
+          setMessage('Failed to remove movie from watchlist'); // Set error message
+          setTimeout(() => setMessage(''), 3000); // Clear the message after a few seconds
+      }
+  };
+  
+  
 
-    return (
-        <center>
-            <div className="movie-list-container">
-                <h1>Watchlist</h1>
-                <div className="movie-cards-container">
-                    {movieList.map(movie => (
-                        <div key={movie.id} className="movie-card">
-                            <button className="close-button" onClick={() => removeMovie(movie.id)}>X</button>
-                            <Link to={`/movie/${movie.id}`}>
-                                <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
-                            </Link>
-                            <div className="movie-card-details">
-                                <h3>{movie.title}</h3>
-                                <p>Rating: {movie.vote_average}/10</p>
-                            </div>
+  return (
+    <center>
+        <div className="movie-list-container">
+            <h1>Watchlist</h1>
+            {message && <p className="message">{message}</p>} {/* Display the message here */}
+            <div className="movie-cards-container">
+                {movieList.map(movie => (
+                    <div key={movie.id} className="movie-card">
+                        <button className="close-button" onClick={() => removeMovie(movie.id)}>X</button>
+                        <Link to={`/movie/${movie.id}`}>
+                            <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} />
+                        </Link>
+                        <div className="movie-card-details">
+                            <h3>{movie.title}</h3>
+                            <p>Rating: {movie.vote_average}/10</p>
                         </div>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
-        </center>
-    );
+        </div>
+    </center>
+);
+
 }
 
 export default Watchlist;

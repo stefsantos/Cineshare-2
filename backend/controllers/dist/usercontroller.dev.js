@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getWatchlist = exports.checkWatchlist = exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = void 0;
+exports.deleteFromWatchlist = exports.getWatchlist = exports.checkWatchlist = exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = void 0;
 
 var _userModel = _interopRequireDefault(require("../models/userModel.js"));
 
@@ -737,3 +737,71 @@ var getWatchlist = function getWatchlist(req, res) {
 };
 
 exports.getWatchlist = getWatchlist;
+
+var deleteFromWatchlist = function deleteFromWatchlist(req, res) {
+  var movieId, userId, updatedUser;
+  return regeneratorRuntime.async(function deleteFromWatchlist$(_context12) {
+    while (1) {
+      switch (_context12.prev = _context12.next) {
+        case 0:
+          _context12.prev = 0;
+          movieId = req.body.movieId;
+          userId = req.user._id;
+
+          if (movieId) {
+            _context12.next = 5;
+            break;
+          }
+
+          return _context12.abrupt("return", res.status(400).json({
+            message: "Movie ID is required"
+          }));
+
+        case 5:
+          _context12.next = 7;
+          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+            $pull: {
+              watchlist: movieId
+            }
+          }, {
+            "new": true,
+            select: "-password"
+          }));
+
+        case 7:
+          updatedUser = _context12.sent;
+
+          if (updatedUser) {
+            _context12.next = 10;
+            break;
+          }
+
+          return _context12.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 10:
+          res.status(200).json({
+            message: "Movie removed from watchlist successfully",
+            watchlist: updatedUser.watchlist
+          });
+          _context12.next = 17;
+          break;
+
+        case 13:
+          _context12.prev = 13;
+          _context12.t0 = _context12["catch"](0);
+          console.error("Error in deleteFromWatchlist:", _context12.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 17:
+        case "end":
+          return _context12.stop();
+      }
+    }
+  }, null, null, [[0, 13]]);
+};
+
+exports.deleteFromWatchlist = deleteFromWatchlist;

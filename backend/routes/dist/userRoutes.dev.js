@@ -27,5 +27,6 @@ router.get('/following/:username', _usercontroller.getUserFollowing);
 router.post('/watchlist/add', _protectRoute["default"], _usercontroller.addToWatchlist);
 router.post('/watchlist/check', _protectRoute["default"], _usercontroller.checkWatchlist);
 router.get('/watchlist/', _protectRoute["default"], _usercontroller.getWatchlist);
+router.post('/watchlist/delete', _protectRoute["default"], _usercontroller.deleteFromWatchlist);
 var _default = router;
 exports["default"] = _default;
