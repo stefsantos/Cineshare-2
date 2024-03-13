@@ -102,7 +102,7 @@ function MyProfilePage() {
         <div className="page">
             <div className="content_container">
                 <div className="profile_container">
-                    <img src={userProfile.banner || 'images/defaultAvatar.jpg'} className="profile_banner" alt={activeusername} />
+                    <img src={userProfile.banner || 'images/defaultBanner.jpg'} className="profile_banner" alt={activeusername} />
                     <img src={userProfile.profilepic || 'images/defaultAvatar.jpg'} className="profile_avatar avatar" alt={activeusername} />
                     <div className="profile_name">{activeusername}</div>
                     <div className="profile_bio">{userProfile.bio || 'No bio available'}</div>
