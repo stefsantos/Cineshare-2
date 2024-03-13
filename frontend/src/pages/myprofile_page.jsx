@@ -21,12 +21,15 @@ function MyProfilePage() {
                 }
                 const data = await response.json();
                 setUserProfile(data);
-                setFavoriteMovies(data.favMovies || []); // Update state with favoriteMovies
+                const favoriteMovies = data.favMovies.map(id => ({ id }));
+                setFavoriteMovies(favoriteMovies);
+                console.log('Updated userProfile:', data.favMovies);
+                fetchMovieDetails(data.favMovies);
             } catch (error) {
                 console.error("Error fetching user profile:", error);
             }
         };
-
+    
         const fetchUserPosts = async () => {
             try {
                 const response = await fetch(`/api/posts/byUser/${activeusername}`);
@@ -40,6 +43,21 @@ function MyProfilePage() {
             }
         };
 
+        const fetchMovieDetails = async (movieIds) => {
+            const movieDetailsPromises = movieIds.map(movieId =>
+                fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=3c4682174e03411b1f2ea9d887d0b8f3`)
+                    .then(response => response.json())
+            );
+
+            Promise.all(movieDetailsPromises)
+                .then(movieDetails => {
+                    setFavoriteMovies(movieDetails.filter(movie => !movie.status_code));
+                })
+                .catch(error => {
+                    console.error('Error fetching movie details:', error);
+                });
+        };
+    
         fetchUserProfile();
         fetchUserPosts();
     }, [activeusername]);
@@ -106,17 +124,20 @@ function MyProfilePage() {
 
                 <div className="favorites_container">
                     <div className="favorites_header">Favorite Movies</div>
-                    <div className="favorites_content">
-                        {favoriteMovies.map(movie => (
-                            <div key={movie.id} className="favorite-container">
-                                <button className="close-button" onClick={() => removeMovie(movie.id)}>X</button>
-                                <Link to={`/movie/${movie.id}`}>
-                                    <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} className="profile_movie-poster" />
-                                </Link>
-                            </div>
-
-                        ))}
-                    </div>
+                    {favoriteMovies.length > 0 ? (
+                        <div className="favorites_content">
+                            {favoriteMovies.map(movie => (
+                                <div key={movie.id} className="favorite-container">
+                                    <button className="close-button" onClick={() => removeMovie(movie.id)}>X</button>
+                                    <Link to={`/movie/${movie.id}`}>
+                                        <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title} className="profile_movie-poster" />
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="favorites_content">No favorite movies found.</div>
+                    )}
                 </div>
             </div>
 

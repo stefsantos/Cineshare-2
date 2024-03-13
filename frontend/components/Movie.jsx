@@ -154,12 +154,17 @@ function Movie() {
             console.log('User is not logged in');
             return;
         }
-    
+        
         if (favorites[movieId]) {
             alert('Movie is already in favorites.');
             return;
         }
     
+        if (Object.keys(favorites).length === 6) {
+            alert('You have already reached the maximum number of favorite movies.');
+            return;
+        }
+
         try {
             const response = await fetch('/api/users/favoriteMovies/add', {
                 method: 'POST',
