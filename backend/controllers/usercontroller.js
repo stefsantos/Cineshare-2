@@ -1,5 +1,5 @@
 import User from '../models/userModel.js';
-
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import generateTokenAndSetCookies from '../utils/helpers/generateTokenAndSetCookies.js';
 
@@ -100,32 +100,31 @@ const signupUser = async (req, res) => {
 };
 
 const loginUser = async (req, res) => {
-
     try {
-
         const { email, password } = req.body;
         const user = await User.findOne({ email });
-        const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
-
-        if (!user || !isPasswordCorrect) {
+        if (!user || !await bcrypt.compare(password, user.password)) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        generateTokenAndSetCookies(user._id, res);
+        // Assuming JWT_SECRET is your secret key for signing JWTs
+        const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
+        // Send the token back to the client
         res.status(200).json({
             _id: user._id,
             username: user.username,
             email: user.email,
-            // Optionally include other fields you wish to return
+            token, // Send the token back to the client
         });
-
-
     } catch (error) {
-        res.status(500).json({ message: error.message });
-        console.log("Error in loginUser: ", error.message);
+        console.error("Error in loginUser:", error.message);
+        res.status(500).json({ message: "Server Error" });
     }
 };
+
+
+
 
 const logoutUser = async (req, res) => {
 
@@ -204,5 +203,42 @@ const updateUser = async (req, res) => {
     }
 };
 
+const addToWatchlist = async (req, res) => {
+    try {
+        // Extract the movieId from the request body
+        const { movieId } = req.body;
 
-export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser };
+        // Ensure a movieId is provided
+        if (!movieId) {
+            return res.status(400).json({ message: "Movie ID is required" });
+        }
+
+        // Use the authenticated user's ID from req.user added by the protectRoute middleware
+        const userId = req.user._id;
+
+        // Find the user and update their watchlist to include the new movieId
+        // Using $addToSet to avoid duplicate movieIds in the watchlist
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { watchlist: movieId } },
+            { new: true, select: "-password" } // Return the updated document without the password
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Respond with a success message and the updated watchlist
+        res.status(200).json({
+            message: "Movie added to watchlist successfully",
+            watchlist: updatedUser.watchlist
+        });
+    } catch (error) {
+        console.error("Error in addToWatchlist:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+
+export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist };

@@ -44,33 +44,62 @@ function MovieDetail() {
         navigate(-1); // Navigates back to the previous page
     };
 
+    const addToWatchlist = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            // Redirect to login page if user is not logged in
+            navigate('/signin_page');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/users/watchlist/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieId: id }),
+            });
+
+            if (!response.ok) {
+                const errorResponse = await response.text(); // Fetching text to log, assuming the response might not be JSON.
+                throw new Error(`Failed to add movie to watchlist: ${errorResponse}`);
+            }
+
+            alert('Movie added to watchlist successfully!');
+        } catch (error) {
+            console.error('Error adding movie to watchlist:', error);
+            alert(error.message);
+        }
+    };
+
     return (
         <div>
-        {movieDetails && (
-            <div style={{ display: 'flex', alignItems: 'center', margin: '20px' }}>
-                <div>
-                    <img 
-                        src={`https://image.tmdb.org/t/p/w500/${movieDetails.poster_path}`} 
-                        alt={movieDetails.title} 
-                        width='400px' 
-                        height='500px' 
-                    />
+            {movieDetails && (
+                <div style={{ display: 'flex', alignItems: 'center', margin: '20px' }}>
+                    <div>
+                        <img 
+                            src={`https://image.tmdb.org/t/p/w500/${movieDetails.poster_path}`} 
+                            alt={movieDetails.title} 
+                            width='400px' 
+                            height='500px' 
+                        />
+                    </div>
+                    <div style={{ marginLeft: '20px' }}>
+                        <h1>{movieDetails.title} ({movieDetails.release_date?.split('-')[0]}) </h1>
+                        
+                        <p>{movieDetails.overview}</p>
+                        {movieDetails.director && <p>Director: {movieDetails.director}</p>}
+                        <p>User Score: {renderStarRating(movieDetails.vote_average * 10)}</p>
+                        
+                    </div>
                 </div>
-                <div style={{ marginLeft: '20px' }}>
-                    <h1>{movieDetails.title} ({movieDetails.release_date?.split('-')[0]}) </h1>
-                    
-                    <p>{movieDetails.overview}</p>
-                    {movieDetails.director && <p>Director: {movieDetails.director}</p>}
-                    <p>User Score: {renderStarRating(movieDetails.vote_average * 10)}</p>
-                    
-                </div>
-                
-            </div>
-        )}
-        
-        <button onClick={handleBack} style={{ marginTop: '10px', marginLeft: '20px', color: 'white'}}>Back</button>
-        <button onClick={handleBack} style={{ marginTop: '10px', marginLeft: '20px', color: 'white'}}>Add to Watchlist</button>
-    </div>
+            )}
+            
+            <button onClick={handleBack} style={{ marginTop: '10px', marginLeft: '20px', color: 'white'}}>Back</button>
+            <button onClick={addToWatchlist} style={{ marginTop: '10px', marginLeft: '20px', color: 'white'}}>Add to Watchlist</button>
+        </div>
     );
 }
 

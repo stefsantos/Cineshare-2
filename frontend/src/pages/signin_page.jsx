@@ -32,7 +32,7 @@ function SigninPage({ setShowNavbar }) {
     const handleLogin = async (event) => {
         event.preventDefault();
         setIsLoading(true);
-    
+
         try {
             const res = await fetch("/api/users/login", {
                 method: "POST",
@@ -41,22 +41,23 @@ function SigninPage({ setShowNavbar }) {
                 },
                 body: JSON.stringify({ email, password })
             });
-    
+
             if (res.status === 500) {
                 // if server is not reachable
                 throw new Error('Server responded with a status: 500 Internal Server Error');
             }
-    
+
             const data = await res.json();
-    
+
             if (res.status === 400) {
                 // wrong password or other client-side error
                 setErrorMessage("Incorrect Email or Password");
             } else {
                 // successful login
                 userContext.updateUser(data.username);
+                // Store the token in local storage
+                localStorage.setItem("token", data.token);
                 navigateHome();
-                localStorage.setItem("user-info", JSON.stringify(data));
             }
         } catch (error) {
             // if server is not reachable
@@ -66,7 +67,7 @@ function SigninPage({ setShowNavbar }) {
             setIsLoading(false);
         }
     };
-    
+
 
     return (
         <div className="signin-fullscreen">
@@ -98,11 +99,11 @@ function SigninPage({ setShowNavbar }) {
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
                                 />
-                            {errorMessage && (
-                                <div className="error-message" style={{ color: 'red', textAlign: 'left'}}>
-                                    {errorMessage}
-                                </div>
-                            )}
+                                {errorMessage && (
+                                    <div className="error-message" style={{ color: 'red', textAlign: 'left' }}>
+                                        {errorMessage}
+                                    </div>
+                                )}
                             </div>
 
                             <button type="submit" className="signin-button" disabled={isLoading}>

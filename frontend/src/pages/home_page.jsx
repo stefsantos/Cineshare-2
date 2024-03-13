@@ -64,7 +64,7 @@ function HomePage() {
                             ) : (
                                 posts.map((post, index) => (
                                     <Post key={index} post={{
-                                        user: post.postedBy ? post.postedBy.username : 'Unknown',
+                                        user: post.postedBy ? post.postedBy.username : 'deleteduser',
                                         movieId: post.movieId,
                                         movie: post.movie,
                                         content: post.content,
