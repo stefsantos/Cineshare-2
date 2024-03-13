@@ -309,7 +309,111 @@ const deleteFromWatchlist = async (req, res) => {
     }
 };
 
+const addToFavoriteMovies = async (req, res) => {
+    try {
+        // Extract the movieId from the request body
+        const { movieId } = req.body;
+
+        // Ensure a movieId is provided
+        if (!movieId) {
+            return res.status(400).json({ message: "Movie ID is required" });
+        }
+
+        // Use the authenticated user's ID from req.user added by the protectRoute middleware
+        const userId = req.user._id;
+
+        // Find the user and update their favorite movies to include the new movieId
+        // Using $addToSet to avoid duplicate movieIds in the favorite movies list
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { favMovies: movieId } },
+            { new: true, select: "-password" } // Return the updated document without the password
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Respond with a success message and the updated favorite movies list
+        res.status(200).json({
+            message: "Movie added to favorite movies successfully",
+            favMovies: updatedUser.favMovies
+        });
+    } catch (error) {
+        console.error("Error in addToFavoriteMovies:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};  
+
+const checkFavoriteMovies = async (req, res) => {
+    try {
+        const { movieId } = req.body; // Expecting movieId to be sent in the request body
+        const userId = req.user._id; // Assuming you have middleware to set req.user
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Check if the movieId is in the user's favorite movies list
+        const isInFavoriteMovies = user.favMovies.includes(movieId);
+
+        // Respond with the result
+        res.status(200).json({ isInFavoriteMovies });
+    } catch (error) {
+        console.error("Error in checkFavoriteMovies:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const getFavoriteMovies = async (req, res) => {
+    try {
+        const userId = req.user._id; // Extract the user ID set by your authentication middleware
+
+        // Find the user by their ID
+        const user = await User.findById(userId).select('favMovies');
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Respond with the user's favorite movies list
+        res.status(200).json({ favMovies: user.favMovies });
+    } catch (error) {
+        console.error("Error in getFavoriteMovies:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const deleteFromFavoriteMovies = async (req, res) => {
+    try {
+        const { movieId } = req.body;
+        const userId = req.user._id;
+
+        if (!movieId) {
+            return res.status(400).json({ message: "Movie ID is required" });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { $pull: { favMovies: movieId } },
+            { new: true, select: "-password" }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Movie removed from favorite movies successfully",
+            favMovies: updatedUser.favMovies
+        });
+    } catch (error) {
+        console.error("Error in deleteFromFavoriteMovies:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
 
 
-
-export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist, deleteFromWatchlist };
+export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist, deleteFromWatchlist, addToFavoriteMovies, checkFavoriteMovies, getFavoriteMovies, deleteFromFavoriteMovies };

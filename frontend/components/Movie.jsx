@@ -9,6 +9,7 @@ function Movie() {
     const [currentCategory, setCurrentCategory] = useState('popular');
     const [url, setUrl] = useState('https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3');
     const [watchlist, setWatchlist] = useState({});
+    const [favorites, setFavorites] = useState({});
 
     useEffect(() => {
         const fetchWatchlist = async () => {
@@ -81,19 +82,23 @@ function Movie() {
     };
 
     const handleAddToWatchlist = async (movieId) => {
+        // Your existing implementation for adding to watchlist
+    };
+
+    const handleAddToFavoriteMovies = async (movieId) => {
         const token = localStorage.getItem('token');
         if (!token) {
             console.log('User is not logged in');
             return;
         }
 
-        if (watchlist[movieId]) {
-            alert('Movie is already in watchlist.');
+        if (favorites[movieId]) {
+            alert('Movie is already in favorites.');
             return;
         }
 
         try {
-            const response = await fetch('/api/users/watchlist/add', {
+            const response = await fetch('/api/users/favoriteMovies/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -103,17 +108,17 @@ function Movie() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to add movie to watchlist');
+                throw new Error('Failed to add movie to favorites');
             }
 
-            setWatchlist(prevWatchlist => ({
-                ...prevWatchlist,
+            setFavorites(prevFavorites => ({
+                ...prevFavorites,
                 [movieId]: true
             }));
 
-            alert('Movie added to watchlist successfully!');
+            alert('Movie added to favorites successfully!');
         } catch (error) {
-            console.error('Error adding movie to watchlist:', error);
+            console.error('Error adding movie to favorites:', error);
             alert(error.message);
         }
     };
@@ -159,10 +164,10 @@ function Movie() {
                             <h3>{movie.title}</h3>
                             <p>Rating: {movie.vote_average}/10</p>
                             <button
-                                className={watchlist[movie.id] ? "watchlist-button-added" : "watchlist-button"}
-                                onClick={() => handleAddToWatchlist(movie.id)}
+                                className={favorites[movie.id] ? "favorites-button-added" : "favorites-button"}
+                                onClick={() => handleAddToFavoriteMovies(movie.id)}
                             >
-                                {watchlist[movie.id] ? 'Added to Watchlist' : 'Add to Watchlist'}
+                                {favorites[movie.id] ? 'Added to Favorites' : 'Add to Favorites'}
                             </button>
                         </div>
                     </div>

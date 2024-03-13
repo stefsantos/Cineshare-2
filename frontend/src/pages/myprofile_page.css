@@ -57,7 +57,7 @@
     width: 100%; 
     height: 100%;
     object-fit: cover; 
-  }
+}
 
 .profile_name {
     position: relative; 
@@ -212,33 +212,45 @@
     flex-wrap: wrap;
 }
 
+.favorite-container {
+    position: relative;
+    display: inline-block;
+    margin: 10px; 
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 5px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
 .profile_movie-poster {
-    width: 111px;
-    height: 150px; 
+    max-width: 20%; /* Adjust as needed */
+    max-height: 20%; /* Adjust as needed */
     margin: 10px;
     box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5);
     transition: transform 0.3s ease;
-    display: inline-block;
 }
 
 .profile_movie-poster:hover {
     transform: scale(1.05);
 }
 
-.button.edit_profile .unfollow-status {
-    display: none;
-    font-weight: bold;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.button.edit_profile:hover .unfollow-status {
-    display: inline;
-    font-weight: bold;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.button.edit_profile:hover .follow-status {
-    display: none;
-    font-weight: bold;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    padding: 5px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: none;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 1; /* Ensure the close button is on top of the image */
 }
