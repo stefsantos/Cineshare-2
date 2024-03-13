@@ -20,22 +20,22 @@ function Post({ post }) {
 
     const fetchLikeStatus = async () => {
         try {
-            const res = await fetch(`/api/posts/likes/status/${post._id}`, {
+            const response = await fetch(`/api/posts/likes/status/${post._id}`, {
                 headers: {
                     "Content-Type": "application/json",
-                    "authorization": `Bearer ${localStorage.getItem('token')}`
-            },
-        });
-
-        if (!response.ok) {
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch like status');
+            }
+            const data = await response.json();
             setIsHeartActive(data.isLiked);
-        } else {
-            throw new Error('Failed to fetch like status');
-        }
         } catch (error) {
             console.error('Error fetching like status:', error);
         }
-    }
+    };
+    
 
     const fetchLikeCount = async () => {
         try {
@@ -74,7 +74,7 @@ function Post({ post }) {
                 return;
             }
             console.log(data);
-            
+            fetchLikeStatus();
             fetchLikeCount();
 
         } catch (error) {
