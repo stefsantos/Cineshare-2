@@ -21,8 +21,7 @@ function MyProfilePage() {
                 }
                 const data = await response.json();
                 setUserProfile(data);
-                const favoriteMovies = data.favMovies.map(id => ({ id }));
-                setFavoriteMovies(favoriteMovies);
+                setFavoriteMovies(data.favMovies || []); // Update state with favoriteMovies
             } catch (error) {
                 console.error("Error fetching user profile:", error);
             }
@@ -43,49 +42,7 @@ function MyProfilePage() {
 
         fetchUserProfile();
         fetchUserPosts();
-        fetchWatchlistMovies();
-
     }, [activeusername]);
-
-    const fetchWatchlistMovies = async () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.log('User is not logged in');
-            return;
-        }
-
-        try {
-            const watchlistResponse = await fetch('/api/users/watchlist', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-
-            if (watchlistResponse.ok) {
-                const data = await watchlistResponse.json();
-                fetchMovieDetails(data.watchlist);
-            } else {
-                throw new Error('Failed to fetch watchlist');
-            }
-        } catch (error) {
-            console.error('Error fetching watchlist:', error);
-        }
-    };
-
-    const fetchMovieDetails = async (watchlist) => {
-        const movieDetailsPromises = watchlist.map(movieId =>
-            fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=3c4682174e03411b1f2ea9d887d0b8f3`)
-                .then(response => response.json())
-        );
-
-        Promise.all(movieDetailsPromises)
-            .then(movieDetails => {
-                setFavoriteMovies(movieDetails.filter(movie => !movie.status_code)); // Filter out any potential errors
-            })
-            .catch(error => {
-                console.error('Error fetching movie details:', error);
-            });
-    };
 
     const removeMovie = async (movieId) => {
         const token = localStorage.getItem('token');
@@ -95,7 +52,7 @@ function MyProfilePage() {
         }
 
         try {
-            const response = await fetch('/api/users/watchlist/delete', { // Adjust according to your actual endpoint
+            const response = await fetch('/api/users/favoriteMovies/delete', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,12 +62,12 @@ function MyProfilePage() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to remove movie from watchlist');
+                throw new Error('Failed to remove movie from favorites');
             }
 
-            setFavoriteMovies(currentMovieList => currentMovieList.filter(movie => movie.id !== movieId));
+            setFavoriteMovies(currentMovies => currentMovies.filter(movie => movie.id !== movieId));
         } catch (error) {
-            console.error('Error removing movie from watchlist:', error);
+            console.error('Error removing movie from favorites:', error);
         }
     };
 

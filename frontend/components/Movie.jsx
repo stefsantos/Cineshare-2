@@ -41,6 +41,35 @@ function Movie() {
     }, []);
 
     useEffect(() => {
+        const fetchFavorites = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/favoriteMovies', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                        },
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        const favoritesMap = data.favMovies.reduce((acc, movieId) => {
+                            acc[movieId] = true;
+                            return acc;
+                        }, {});
+                        setFavorites(favoritesMap);
+                    } else {
+                        throw new Error('Failed to fetch favorites');
+                    }
+                } catch (error) {
+                    console.error('Error fetching favorites:', error);
+                }
+            }
+        };
+    
+        fetchFavorites();
+    }, []);
+
+    useEffect(() => {
         const getMovie = () => {
             let currentUrl = searchTerm
                 ? `https://api.themoviedb.org/3/search/movie?api_key=3c4682174e03411b1f2ea9d887d0b8f3&query=${encodeURIComponent(searchTerm)}`
@@ -82,23 +111,19 @@ function Movie() {
     };
 
     const handleAddToWatchlist = async (movieId) => {
-        // Your existing implementation for adding to watchlist
-    };
-
-    const handleAddToFavoriteMovies = async (movieId) => {
         const token = localStorage.getItem('token');
         if (!token) {
             console.log('User is not logged in');
             return;
         }
 
-        if (favorites[movieId]) {
-            alert('Movie is already in favorites.');
+        if (watchlist[movieId]) {
+            alert('Movie is already in watchlist.');
             return;
         }
 
         try {
-            const response = await fetch('/api/users/favoriteMovies/add', {
+            const response = await fetch('/api/users/watchlist/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,14 +133,53 @@ function Movie() {
             });
 
             if (!response.ok) {
-                throw new Error('Failed to add movie to favorites');
+                throw new Error('Failed to add movie to watchlist');
             }
 
-            setFavorites(prevFavorites => ({
-                ...prevFavorites,
+            setWatchlist(prevWatchlist => ({
+                ...prevWatchlist,
                 [movieId]: true
             }));
 
+            alert('Movie added to watchlist successfully!');
+        } catch (error) {
+            console.error('Error adding movie to watchlist:', error);
+            alert(error.message);
+        }
+    };
+
+    const handleAddToFavorites = async (movieId) => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('User is not logged in');
+            return;
+        }
+    
+        if (favorites[movieId]) {
+            alert('Movie is already in favorites.');
+            return;
+        }
+    
+        try {
+            const response = await fetch('/api/users/favoriteMovies/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ movieId }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Failed to add movie to favorites');
+            }
+    
+            // Update the state after successfully adding the movie to favorites
+            setFavorites(prevFavorites => ({
+                ...prevFavorites,
+                [movieId]: true // Mark the movie as a favorite
+            }));
+    
             alert('Movie added to favorites successfully!');
         } catch (error) {
             console.error('Error adding movie to favorites:', error);
@@ -164,8 +228,14 @@ function Movie() {
                             <h3>{movie.title}</h3>
                             <p>Rating: {movie.vote_average}/10</p>
                             <button
+                                className={watchlist[movie.id] ? "watchlist-button-added" : "watchlist-button"}
+                                onClick={() => handleAddToWatchlist(movie.id)}
+                            >
+                                {watchlist[movie.id] ? 'Added to Watchlist' : 'Add to Watchlist'}
+                            </button>
+                            <button
                                 className={favorites[movie.id] ? "favorites-button-added" : "favorites-button"}
-                                onClick={() => handleAddToFavoriteMovies(movie.id)}
+                                onClick={() => handleAddToFavorites(movie.id)}
                             >
                                 {favorites[movie.id] ? 'Added to Favorites' : 'Add to Favorites'}
                             </button>
