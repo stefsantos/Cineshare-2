@@ -23,5 +23,6 @@ router.post('/favoriteMovies/add', protectRoute, addToFavoriteMovies);
 router.post('/favoriteMovies/check', protectRoute, checkFavoriteMovies);
 router.get('/favoriteMovies/', protectRoute, getFavoriteMovies);
 router.post('/favoriteMovies/delete', protectRoute, deleteFromFavoriteMovies);
+router.post('/favoriteMovies/delete', protectRoute, deleteFromFavoriteMovies);
 
 export default router;
