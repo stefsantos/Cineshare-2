@@ -9,10 +9,32 @@ function Post({ post }) {
     const { activeusername } = useUser();
     const [isHeartActive, setIsHeartActive] = useState(false);
     const [showComments, setShowComments] = useState(false);
+    const [likeCount, setLikeCount] = useState(post.likes?.length ?? 0);
     
     // Event handler for clicking the heart icon
-    const toggleHeart = () => {
-        setIsHeartActive(!isHeartActive);
+    const toggleHeart = async () => {
+
+        try {
+            
+            const res = await fetch("/api/posts/like/" + post._id, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const data = await res.json();
+            if (data.error) {
+                console.error("Error toggling like:", data.error);
+                return;
+            }
+            console.log(data);
+            
+            setIsHeartActive(data.message === "post liked");
+            setLikeCount(prevCount => data.message === "post liked" ? prevCount + 1 : prevCount - 1);
+
+        } catch (error) {
+            console.error("Error toggling like:", error);
+        }
     };
 
     // Function to open the comment pop-up
@@ -83,6 +105,7 @@ function Post({ post }) {
                     <div className='delete' onClick={handleDeletePost}></div>
                 )}
             </div>
+            <div className='like-counter'>{likeCount} {likeCount == 1 ? 'like' : 'likes'}</div>
             <small>{post.timestamp}</small>
             <CommentPopup isOpen={showComments} onClose={closeComments} post={post} />
         </div>

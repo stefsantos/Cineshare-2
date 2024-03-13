@@ -55,6 +55,11 @@
     align-items: center; 
 }
 
+.like-counter {
+    color: rgb(255, 255, 255);
+    font-size: 12px;
+}
+
 .heart, .comment, .delete {
     margin-top: 10px;
     margin-bottom: 10px;
