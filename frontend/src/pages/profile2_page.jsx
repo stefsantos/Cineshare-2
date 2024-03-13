@@ -51,6 +51,19 @@ const profileAvatars = {
             }
         };
 
+        const fetchUserPosts = async () => {
+            try {
+                const response = await fetch(`/api/posts/byUser/${username}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setPosts(data.posts);
+            } catch (error) {
+                console.error("Error fetching user's posts:", error);
+            }
+        };
+
         const fetchActiveProfile = async () => {
             try {
                 const response = await fetch(`/api/users/profile/${activeusername}`); 
@@ -67,17 +80,14 @@ const profileAvatars = {
         
         fetchActiveProfile();
         fetchUserProfile();
+        fetchUserPosts();
         fetchTrendingMovies();
     }, []);
 
 
     
     const [posts, setPosts] = React.useState([
-        { id: 1, user: username, movie: '(500) Days of Summer', movieId: '19913', content: 'I love 500 days of summer it makes me sad LOL.', timestamp: '2024-22-02' },
-        { id: 2, user: username, movie: 'Her', movieId: '152601', content: 'Its so over :((', timestamp: '2024-16-02' },
-        { id: 3, user: username, movie: 'The Boy and the Heron', movieId: '508883', content: 'IM TWEAKING RAAHHHHH', timestamp: '2024-11-02' },
-        { id: 4, user: username, movie: 'Minecraft: The Story of Mojang', movieId: '151870', content: 'MINEcraft is my favorite game! <3 :D', timestamp: '2024-09-02' },
-        { id: 5, user: username, movie: 'About Time', movieId: '122906', content: 'WE ARE SO UP GRAH!', imageUrl: 'https://i.redd.it/t5dmyn6ll49a1.jpg', timestamp: '2024-01-02' },
+       
     ]);
 
     useEffect(() => {
@@ -138,8 +148,15 @@ const profileAvatars = {
                 </div>
                 
                 <div className="post_container">
-                    {posts.map(post => (
-                        <Post key={post.id} post={post} />
+                    {posts.map((post, index) => (
+                        <Post key={index} post={{
+                            user: post.postedBy.username,
+                            movieId: post.movieId,
+                            movie: post.movie,
+                            content: post.content,
+                            imageUrl: post.imageUrl,
+                            timestamp: new Date(post.createdAt).toLocaleDateString()
+                        }} />
                     ))}
                 </div>
 
