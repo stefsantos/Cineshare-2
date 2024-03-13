@@ -59,7 +59,7 @@ function Watchlist() {
       }
   
       try {
-          const response = await fetch('/api/users/watchlist/delete', { // Adjust according to your actual endpoint
+          const response = await fetch('/api/users/watchlist/delete', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
