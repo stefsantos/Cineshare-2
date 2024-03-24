@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './MovieDetail.css';
+import Post from '../src/pages/Post';
 
 function MovieDetail() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [movieDetails, setMovieDetails] = useState(JSON.parse(localStorage.getItem(`movieDetails-${id}`)) || null);
     const [isAddedToWatchlist, setIsAddedToWatchlist] = useState(false);
+    const [posts, setPosts] = useState([]);
 
     useEffect(() => {
         const checkWatchlistAndFetchDetails = async () => {
@@ -52,10 +54,37 @@ function MovieDetail() {
             } catch (error) {
                 console.error('Error:', error);
             }
+            await getPostsForMovie();
         };
+
 
         checkWatchlistAndFetchDetails();
     }, [id, movieDetails, navigate]);
+
+
+    const getPostsForMovie = async () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/signin_page');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`/api/posts/movie/${id}`, { 
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch posts');
+            }
+            const postsData = await response.json();
+            setPosts(postsData); 
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+        }
+    };
 
     const renderStarRating = (score) => {
         const rating = Math.round(score / 20); // Convert to a 5-star rating
@@ -105,6 +134,17 @@ function MovieDetail() {
         }
     };
 
+    const renderPosts = () => (
+        <div>
+            <h2>Related Posts</h2>
+            {posts.length > 0 ? (
+                posts.map(post => <Post key={post._id} post={post} />)
+            ) : (
+                <p>No related posts available.</p>
+            )}
+        </div>
+    );
+
     return (
         <div>
             {movieDetails && (
@@ -130,7 +170,7 @@ function MovieDetail() {
             <button onClick={addToWatchlist} className={isAddedToWatchlist ? "watchlist-button-added" : "watchlist-button"}>
                 {isAddedToWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
             </button>
-
+            {renderPosts()}
         </div>
     );
 }

@@ -269,7 +269,21 @@ const getLikeStatus = async (req, res) => {
     }
 };
 
+const getMovieId = async (req, res) => {
+    try {
+        const { movieId } = req.params; 
+        const posts = await Post.find({ movieId }).populate('postedBy', 'username');
+        if (!posts.length) {
+            return res.status(404).json({ message: "No posts found for this movie" });
+        }
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 
 export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
     getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost, 
-    getLikeCount, getLikeStatus};
+    getLikeCount, getLikeStatus, getMovieId};

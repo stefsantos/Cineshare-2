@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts, getUserPosts, updatePost, getLikeCount, getLikeStatus } from '../controllers/postcontroller.js';
+import { createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts, getUserPosts, updatePost, getLikeCount, getLikeStatus, getMovieId } from '../controllers/postcontroller.js';
 import protectRoute from '../middleware/protectRoute.js';
 
 const router = express.Router();
@@ -14,6 +14,7 @@ router.post("/like/:id", protectRoute, likeUnlikePost);
 router.post("/reply/:id", protectRoute, replyToPost);
 router.get('/likes/count/:id', protectRoute, getLikeCount);
 router.get('/likes/status/:id', protectRoute, getLikeStatus);
+router.get('/movie/:movieId', protectRoute, getMovieId);
 
 router.put('/:id', protectRoute, updatePost);
 
