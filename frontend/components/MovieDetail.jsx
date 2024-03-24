@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './MovieDetail.css';
+import '../src/pages/Post.css';
 import Post from '../src/pages/Post';
 
 function MovieDetail() {
@@ -135,15 +136,18 @@ function MovieDetail() {
     };
 
     const renderPosts = () => (
-        <div>
+        <div className='reviews'>
             <h2>Related Posts</h2>
             {posts.length > 0 ? (
-                posts.map(post => <Post key={post._id} post={post} />)
+                posts.map(post => (
+                    <Post key={post._id} post={{ ...post, user: post.postedBy.username }} />
+                ))
             ) : (
                 <p>No related posts available.</p>
             )}
         </div>
     );
+    
 
     return (
         <div>
