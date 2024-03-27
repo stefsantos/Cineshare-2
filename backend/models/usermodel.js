@@ -26,6 +26,12 @@ const userSchema = mongoose.Schema({
 
         },
 
+        banner: {
+            type: String,
+            default: "",
+
+        },
+
         followers: {
             type: [String],
             default: []
