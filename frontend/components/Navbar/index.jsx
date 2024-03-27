@@ -27,12 +27,19 @@ const Navbar = () => {
     const handleLogout = async (event) => {
         event.preventDefault();
         try {
-            await fetch('/api/logout', { method: 'GET' });
+            const res = await fetch('/api/users/logout', { method: 'POST' });
+            const data = await res.json();
+            console.log(data.message);
+
+            localStorage.removeItem("token"); // Clear token from localStorage
+            sessionStorage.clear(); // Clear sessionStorage
+
             navigate('/signin_page'); // Use navigate to redirect
         } catch (error) {
             console.error('Logout failed:', error);
         }
     };
+
 
     return (
         <>

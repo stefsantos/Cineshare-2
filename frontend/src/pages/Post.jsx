@@ -110,6 +110,10 @@ function Post({ post }) {
                 return;
             }
             console.log(data.message);
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 10); 
         } catch (error) {
             console.error(error);
         }
