@@ -157,12 +157,14 @@ const profileAvatars = {
                 <div className="post_container">
                     {posts.map((post, index) => (
                         <Post key={index} post={{
+                            _id: post._id,
                             user: post.postedBy.username,
                             movieId: post.movieId,
                             movie: post.movie,
                             content: post.content,
                             imageUrl: post.imageUrl,
-                            timestamp: new Date(post.createdAt).toLocaleDateString()
+                            timestamp: new Date(post.createdAt).toLocaleDateString(),
+            
                         }} />
                     ))}
                 </div>
