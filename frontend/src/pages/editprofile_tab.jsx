@@ -3,11 +3,27 @@ import './editprofile_tab.css';
 import { useUser } from '../../src/UserContext';
 
 const EditProfileTab = ({ isVisible, onClose }) => {
-  const { updateUser } = useUser();
+  const { updateUser, activeusername } = useUser(); // Fetch activeusername from UserContext
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
   const [profilePic, setProfilePic] = useState(null);
   const [banner, setBanner] = useState(null);
+  const [userid, setUserid] = useState([]);
+
+  const fetchUserProfile = async () => {
+    try {
+        const response = await fetch(`/api/users/profile/${activeusername}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setUserid(data._id);
+      
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+    }
+};
+fetchUserProfile();
 
   const handleSaveChanges = async () => {
     try {
@@ -19,7 +35,7 @@ const EditProfileTab = ({ isVisible, onClose }) => {
       if (profilePic) {
         const profilePicData = new FormData();
         profilePicData.append('profilePic', profilePic);
-        const profilePicResponse = await fetch('http://localhost:3000/api/users/uploadProfilePic', {
+        const profilePicResponse = await fetch(`http://localhost:3000/api/users/uploadProfilePic/${userid}`, { // Include activeusername in the URL
           method: 'POST',
           body: profilePicData,
           credentials: 'include',
@@ -32,7 +48,7 @@ const EditProfileTab = ({ isVisible, onClose }) => {
       if (banner) {
         const bannerData = new FormData();
         bannerData.append('banner', banner);
-        const bannerResponse = await fetch('http://localhost:3000/api/users/uploadBanner', {
+        const bannerResponse = await fetch(`http://localhost:3000/api/users/uploadBanner/${userid}`, { // Include activeusername in the URL
           method: 'POST',
           body: bannerData,
           credentials: 'include',

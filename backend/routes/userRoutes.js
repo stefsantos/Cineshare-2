@@ -4,9 +4,30 @@ import { uploadProfilePic, uploadBanner, getUserProfile, signupUser, loginUser, 
 import protectRoute from '../middleware/protectRoute.js';
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/' });
 
-//signup
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'useruploads/');
+  },
+  filename: function (req, file, cb) {
+    const userId = req.params.userid;
+
+    let filename;
+    if (file.fieldname === 'profilePic') {
+      filename = `${userId}-pfp.${file.originalname.split('.').pop()}`;
+    } else if (file.fieldname === 'banner') {
+      filename = `${userId}-banner.${file.originalname.split('.').pop()}`;
+    } else {
+      filename = file.originalname;
+    }
+
+    cb(null, filename);
+  }
+});
+
+const upload = multer({ storage: storage });
+
+// Routes
 router.get('/profile/:username', getUserProfile);
 router.post('/signup', signupUser);
 router.post('/login', loginUser);
@@ -26,14 +47,15 @@ router.post('/favoriteMovies/check', protectRoute, checkFavoriteMovies);
 router.get('/favoriteMovies/', protectRoute, getFavoriteMovies);
 router.post('/favoriteMovies/delete', protectRoute, deleteFromFavoriteMovies);
 router.post('/favoriteMovies/delete', protectRoute, deleteFromFavoriteMovies);
-router.post('/uploadProfilePic', protectRoute, upload.single('profilePic'), (req, res, next) => {
+
+router.post('/uploadProfilePic/:userid', protectRoute, upload.single('profilePic'), (req, res, next) => {
     console.log('Profile Pic:', req.file); // Log the uploaded profile picture
     uploadProfilePic(req, res, next);
   });
   
-  router.post('/uploadBanner', protectRoute, upload.single('banner'), (req, res, next) => {
+router.post('/uploadBanner/:userid', protectRoute, upload.single('banner'), (req, res, next) => {
     console.log('Banner:', req.file); // Log the uploaded banner
     uploadBanner(req, res, next);
-  });
+});
 
 export default router;
