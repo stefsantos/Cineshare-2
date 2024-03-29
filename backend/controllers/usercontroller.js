@@ -179,7 +179,7 @@ const followUnfollowUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const { username, email, password, profilepic, bio, watchlist, favMovies } = req.body;
+        const { username, email, password, profilepic, banner, bio, watchlist, favMovies } = req.body;
         const userId = req.user._id;
         let user = await User.findById(userId);
         if (!user) {
@@ -193,9 +193,11 @@ const updateUser = async (req, res) => {
         user.username = username || user.username;
         user.email = email || user.email;
         user.profilepic = profilepic || user.profilepic;
+        user.banner = banner || user.banner;
         user.bio = bio || user.bio;
         user.watchlist = watchlist || user.watchlist;
         user.favMovies = favMovies || user.favMovies;
+        
         await user.save();
         res.status(200).json({ message: "User updated", user });
     } catch (error) {
@@ -203,6 +205,7 @@ const updateUser = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
 
 const addToWatchlist = async (req, res) => {
     try {

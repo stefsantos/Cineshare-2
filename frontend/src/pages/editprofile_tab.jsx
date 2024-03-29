@@ -6,35 +6,38 @@ const EditProfileTab = ({ isVisible, onClose }) => {
   const { updateUser, activeusername } = useUser(); // Fetch activeusername from UserContext
   const [username, setUsername] = useState('');
   const [bio, setBio] = useState('');
-  const [profilePic, setProfilePic] = useState(null);
-  const [banner, setBanner] = useState(null);
+  const [profilePicFile, setProfilePicFile] = useState(null); // Change state name to profilePicFile
+  const [bannerFile, setBannerFile] = useState(null); // Change state name to bannerFile
+  const [profilepic, setProfilePic] = useState(null); // Change state name to profilePicFile
+  const [banner, setBanner] = useState(null); // Change state name to bannerFile
   const [userid, setUserid] = useState([]);
 
   const fetchUserProfile = async () => {
     try {
-        const response = await fetch(`/api/users/profile/${activeusername}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setUserid(data._id);
-      
+      const response = await fetch(`/api/users/profile/${activeusername}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUserid(data._id);
     } catch (error) {
-        console.error("Error fetching user profile:", error);
+      console.error("Error fetching user profile:", error);
     }
-};
-fetchUserProfile();
+  };
+  fetchUserProfile();
 
   const handleSaveChanges = async () => {
     try {
       const requestBody = {
         bio,
         username,
+        profilepic,
+        banner,
       };
 
-      if (profilePic) {
+      if (profilePicFile) { // Change variable name to profilePicFile
         const profilePicData = new FormData();
-        profilePicData.append('profilePic', profilePic);
+        profilePicData.append('profilePic', profilePicFile);
         const profilePicResponse = await fetch(`http://localhost:3000/api/users/uploadProfilePic/${userid}`, { // Include activeusername in the URL
           method: 'POST',
           body: profilePicData,
@@ -42,12 +45,12 @@ fetchUserProfile();
         });
         const profilePicResult = await profilePicResponse.json();
         console.log('Profile Pic Uploaded:', profilePicResult);
-        requestBody.profilePic = profilePicResult.profilePic;
+        requestBody.profilepic = profilePicResult.profilePic;
       }
 
-      if (banner) {
+      if (bannerFile) { // Change variable name to bannerFile
         const bannerData = new FormData();
-        bannerData.append('banner', banner);
+        bannerData.append('banner', bannerFile);
         const bannerResponse = await fetch(`http://localhost:3000/api/users/uploadBanner/${userid}`, { // Include activeusername in the URL
           method: 'POST',
           body: bannerData,
@@ -109,12 +112,12 @@ fetchUserProfile();
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => setProfilePic(e.target.files[0])} // Update profile picture state onChange
+            onChange={(e) => setProfilePicFile(e.target.files[0])} // Update profile picture state onChange
           />
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => setBanner(e.target.files[0])} // Update banner state onChange
+            onChange={(e) => setBannerFile(e.target.files[0])} // Update banner state onChange
           />
         </div>
         <div className="modal-footer">
