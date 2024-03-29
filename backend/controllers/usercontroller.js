@@ -107,7 +107,6 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        // Assuming JWT_SECRET is your secret key for signing JWTs
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.cookie('jwt', token, {
@@ -115,13 +114,12 @@ const loginUser = async (req, res) => {
             maxAge: 3600000,
             secure: process.env.NODE_ENV === 'production' 
         });
-
-        // Send the token back to the client
+        
         res.status(200).json({
             _id: user._id,
             username: user.username,
             email: user.email,
-            token, // Send the token back to the client
+            token,
         });
     } catch (error) {
         console.error("Error in loginUser:", error.message);
@@ -135,16 +133,13 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
 
     try {
-        res.cookie("jwt","", {maxAge: 1});
+        res.cookie("jwt", "", { expires: new Date(0) });
         res.status(200).json({ message: "User logged out" });
     } catch (err) {
         res.status(500).json({ message: err.message });
         console.log("Error in logoutUser: ", err.message);
         
     }
-
-
-
 };
 
 const followUnfollowUser = async (req, res) => {

@@ -13,6 +13,7 @@ function Post({ post }) {
     
     useEffect(() => {
         setIsHeartActive(post.likes?.includes(activeusername));
+        console.log(post._id);
         fetchLikeCount(); // Fetch the like count when the component mounts
         const likeStatusInterval = setInterval(fetchLikeStatus, 1000); // Poll for like status every second
         return () => clearInterval(likeStatusInterval);
@@ -42,7 +43,6 @@ function Post({ post }) {
             const response = await fetch(`/api/posts/likes/count/${post._id}`, {
                 headers: {
                     "Content-Type": "application/json",
-                    // Include Authorization header if your endpoint requires authentication
                     "Authorization": `Bearer ${localStorage.getItem('token')}`,
                 },
             });
