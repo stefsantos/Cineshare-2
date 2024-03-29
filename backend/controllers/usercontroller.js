@@ -416,5 +416,43 @@ const deleteFromFavoriteMovies = async (req, res) => {
     }
 };
 
+const uploadProfilePic = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
 
-export { getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist, deleteFromWatchlist, addToFavoriteMovies, checkFavoriteMovies, getFavoriteMovies, deleteFromFavoriteMovies };
+        const user = req.user;
+
+        user.profilePic = req.file.path;
+
+        await user.save();
+
+        res.status(200).json({ message: "Profile picture uploaded successfully", profilePic: user.profilePic });
+    } catch (error) {
+        console.error("Error uploading profile picture:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+const uploadBanner = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        const user = req.user;
+
+        user.banner = req.file.path;
+
+        await user.save();
+
+        res.status(200).json({ message: "Banner uploaded successfully", banner: user.banner });
+    } catch (error) {
+        console.error("Error uploading banner:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
+export { uploadProfilePic, uploadBanner, getUserProfile, getUserFollowers, getUserFollowing, signupUser, loginUser, logoutUser, followUnfollowUser, updateUser, addToWatchlist, checkWatchlist, getWatchlist, deleteFromWatchlist, addToFavoriteMovies, checkFavoriteMovies, getFavoriteMovies, deleteFromFavoriteMovies };

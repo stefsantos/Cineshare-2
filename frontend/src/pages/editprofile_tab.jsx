@@ -1,42 +1,67 @@
-import React, { useState } from "react";
-import "./editprofile_tab.css";
+import React, { useState } from 'react';
+import './editprofile_tab.css';
 import { useUser } from '../../src/UserContext';
 
 const EditProfileTab = ({ isVisible, onClose }) => {
   const { updateUser } = useUser();
-  const [username, setUsername] = useState("");
-  const [bio, setBio] = useState("");
+  const [username, setUsername] = useState('');
+  const [bio, setBio] = useState('');
+  const [profilePic, setProfilePic] = useState(null);
+  const [banner, setBanner] = useState(null);
 
   const handleSaveChanges = async () => {
     try {
       const requestBody = {
-        bio: bio,
+        bio,
+        username,
       };
-  
-      if (username.trim() !== "") {
-        requestBody.username = username;
+
+      if (profilePic) {
+        const profilePicData = new FormData();
+        profilePicData.append('profilePic', profilePic);
+        const profilePicResponse = await fetch('http://localhost:3000/api/users/uploadProfilePic', {
+          method: 'POST',
+          body: profilePicData,
+          credentials: 'include',
+        });
+        const profilePicResult = await profilePicResponse.json();
+        console.log('Profile Pic Uploaded:', profilePicResult);
+        requestBody.profilePic = profilePicResult.profilePic;
       }
-  
-      const response = await fetch(`http://localhost:3000/api/users/update/self}`, {
-        method: "POST",
+
+      if (banner) {
+        const bannerData = new FormData();
+        bannerData.append('banner', banner);
+        const bannerResponse = await fetch('http://localhost:3000/api/users/uploadBanner', {
+          method: 'POST',
+          body: bannerData,
+          credentials: 'include',
+        });
+        const bannerResult = await bannerResponse.json();
+        console.log('Banner Uploaded:', bannerResult);
+        requestBody.banner = bannerResult.banner;
+      }
+
+      const response = await fetch(`http://localhost:3000/api/users/update/self`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
       });
-  
+
       if (!response.ok) {
-        throw new Error("Error updating user bio");
+        throw new Error('Error updating user profile');
       }
-  
+
       // Update user context with the new username
-      if (requestBody.username) {
-        updateUser(requestBody.username);
+      if (username.trim() !== '') {
+        updateUser(username);
       }
-  
+
       onClose();
     } catch (error) {
-      console.error("Error saving changes:", error.message);
+      console.error('Error saving changes:', error.message);
     }
   };
 
@@ -65,17 +90,16 @@ const EditProfileTab = ({ isVisible, onClose }) => {
             value={bio}
             onChange={(e) => setBio(e.target.value)} // Update bio state onChange
           ></textarea>
-          {/* <div>
-            <h2>Set Favorites</h2>
-          </div>
-          <div className="grid-3x3">
-            <button className="grid-item">+</button>
-            <button className="grid-item">+</button>
-            <button className="grid-item">+</button>
-            <button className="grid-item">+</button>
-            <button className="grid-item">+</button>
-            <button className="grid-item">+</button>
-          </div> */}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setProfilePic(e.target.files[0])} // Update profile picture state onChange
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setBanner(e.target.files[0])} // Update banner state onChange
+          />
         </div>
         <div className="modal-footer">
           <button className="button cancel-button" onClick={onClose}>
