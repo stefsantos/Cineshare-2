@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import { Nav, NavLink, Bars, NavMenu, LogoutContainer } from "./NavBarElements";
 import { FaHome, FaUserFriends, FaList, FaPencilAlt } from "react-icons/fa";
 import { BiSolidCameraMovie } from "react-icons/bi";
@@ -7,9 +7,10 @@ import PostTab from '../../src/pages/PostTab';
 import { useUser } from '../../src/UserContext';
 
 const Navbar = () => {
-    const navigate = useNavigate(); // Initialize the useNavigate hook
+    const navigate = useNavigate(); 
     const { activeusername } = useUser();
-    
+    const [userProfile, setUserProfile] = useState({});
+
     // State to manage the visibility of the PostTab
     const [isPostTabVisible, setIsPostTabVisible] = useState(false);
 
@@ -18,10 +19,24 @@ const Navbar = () => {
         setIsPostTabVisible(!isPostTabVisible);
     };
 
-    const handlePostClick = (event) => {
-        event.preventDefault();
-        togglePostTab();
-    };
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const response = await fetch(`/api/users/profile/${activeusername}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setUserProfile(data);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
+
+        if (activeusername) {
+            fetchUserProfile();
+        }
+    }, [activeusername]);
 
     // Function to handle logout
     const handleLogout = async (event) => {
@@ -42,6 +57,11 @@ const Navbar = () => {
         }
     };
 
+    // Function to handle post click
+    const handlePostClick = (event) => {
+        event.preventDefault();
+        togglePostTab();
+    };
 
     return (
         <>
@@ -76,7 +96,7 @@ const Navbar = () => {
                 <LogoutContainer>
                 <NavLink to="/myprofile_page">
                     <img 
-                        src={activeusername ? `images/${activeusername}.jpg` : `images/defaultAvatar.jpg`} 
+                        src={userProfile.profilepic ? `http://localhost:4000/${userProfile.profilepic}` : `images/defaultAvatar.jpg`} 
                         onError={(e) => { e.target.onerror = null; e.target.src = 'images/defaultAvatar.jpg'; }}
                         height="75"
                         style={{

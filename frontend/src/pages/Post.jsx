@@ -145,7 +145,7 @@ function Post({ post }) {
 
             <p>{post.content}</p>
             {post.imageUrl && (
-                <img src={post.imageUrl} alt="Post visual" className="post-image" />
+                <img src={`http://localhost:4000/${post.imageUrl}`} alt="Post visual" className="post-image" />
             )}
             <div className='postactions'>
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
