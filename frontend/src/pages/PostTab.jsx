@@ -11,6 +11,7 @@ const PostTab = ({ isVisible, onClose }) => {
   const [selectedMovieId, setSelectedMovieId] = useState('');
   const [selectedMovieTitle, setSelectedMovieTitle] = useState('');
   const [postText, setPostText] = useState('');
+  const [postImage, setPostImage] = useState(null); // State to hold the selected image file
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,15 +24,15 @@ const PostTab = ({ isVisible, onClose }) => {
     setIsLoading(true);
     setError('');
 
-    const postBody = JSON.stringify({
-      content: postText.trim(),
-      movie: selectedMovieTitle,
-      movieId: selectedMovieId,
-      // You might need to adjust handling for the user ID and image URL depending on your backend
-      // postedBy: userId, // Consider handling user identification on the server-side
-    });
-
     try {
+      // Create the post object
+      const postBody = JSON.stringify({
+        content: postText.trim(),
+        movie: selectedMovieTitle,
+        movieId: selectedMovieId,
+      });
+
+      // Send the post request
       const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
@@ -46,9 +47,36 @@ const PostTab = ({ isVisible, onClose }) => {
         throw new Error(data.message || 'Failed to create post');
       }
 
+      // Parse response to get postId
+      const responseData = await response.json();
+      const postId = responseData.post._id;
 
-      const data = await response.json();
-      console.log('Post created:', data);
+      console.log('Post created successfully');
+      console.log('Post ID:', postId);
+
+      // Upload the image if available
+      if (postImage) {
+        const formData = new FormData();
+        formData.append('postImage', postImage);
+
+        try {
+          const imageResponse = await fetch(`/api/posts/uploadPostImage/${postId}`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+          });
+
+          if (!imageResponse.ok) {
+            throw new Error(`Failed to upload post image. Status: ${imageResponse.status}`);
+          }
+
+          const imageData = await imageResponse.json();
+          console.log('Post Image Uploaded:', imageData);
+        } catch (error) {
+          console.error('Error uploading post image:', error);
+        }
+      }
+
       onClose(); // Optionally close the modal on successful creation
     } catch (error) {
       setError(error.message || 'An error occurred while creating the post.');
@@ -93,6 +121,10 @@ const PostTab = ({ isVisible, onClose }) => {
     setPostText(event.target.value);
   };
 
+  const handleImageChange = (event) => {
+    setPostImage(event.target.files[0]); // Update the state with the selected image file
+  };
+
   return (
     <div className="modal-backdrop">
       <div className="modal">
@@ -125,6 +157,11 @@ const PostTab = ({ isVisible, onClose }) => {
             value={postText}
             onChange={handlePostTextChange}
           ></textarea>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
           {error && <div className="error-message">{error}</div>}
         </div>
         <div className="modal-footer">

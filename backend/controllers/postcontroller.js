@@ -1,6 +1,31 @@
 import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 
+const uploadPostImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        const postId = req.params.postid;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        post.image = req.file.path;
+
+        await post.save();
+
+        res.status(200).json({ message: "Post image uploaded successfully", imagePath: post.image });
+    } catch (error) {
+        console.error("Error uploading post image:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 const createPost = async (req, res) => {
     try {
         // Destructure the expected fields from req.body
@@ -210,34 +235,46 @@ const getUserPosts = async (req, res) => {
 
 const updatePost = async (req, res) => {
     try {
-        const postId = req.params.id;
-        const { content, imageUrl } = req.body;
-
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: "Post not found" });
-        }
-
-        // check if user authorized
-        if (post.postedBy.toString() !== req.user._id.toString()) {
-            return res.status(401).json({ message: "Unauthorized to update this post" });
-        }
-
-        if (content) {
-            post.content = content;
-        }
-        if (imageUrl) {
-            post.imageUrl = imageUrl;
-        }
-
-        await post.save();
-
-        res.status(200).json({ message: "Post updated successfully", post });
+      const postId = req.params.id;
+      const { content } = req.body;
+      let { imageUrl } = req.body; // Get imageUrl from request body
+  
+      const post = await Post.findById(postId);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+  
+      // Check if the user is authorized to update this post
+      if (post.postedBy.toString() !== req.user._id.toString()) {
+        return res.status(401).json({ message: "Unauthorized to update this post" });
+      }
+  
+      // If there's a post image uploaded, update the imageUrl
+      if (req.file) {
+        // Assuming you're using multer to handle file uploads
+        // Update imageUrl with the path to the uploaded image
+        imageUrl = req.file.path; // Update imageUrl with the path of the uploaded image
+      }
+  
+      // Update the post content and imageUrl if provided
+      if (content) {
+        post.content = content;
+      }
+      if (imageUrl) {
+        post.imageUrl = imageUrl;
+      }
+  
+      // Save the updated post to the database
+      await post.save();
+  
+      // Send a success response with the updated post
+      res.status(200).json({ message: "Post updated successfully", post });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server Error" });
+      console.error(error);
+      res.status(500).json({ message: "Server Error" });
     }
-};
+  };
+  
 
 const getLikeCount = async (req, res) => {
     try {
@@ -284,6 +321,6 @@ const getMovieId = async (req, res) => {
 };
 
 
-export { createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
+export { uploadPostImage, createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
     getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost, 
     getLikeCount, getLikeStatus, getMovieId};
