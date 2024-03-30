@@ -11,7 +11,7 @@ const PostTab = ({ isVisible, onClose }) => {
   const [selectedMovieId, setSelectedMovieId] = useState('');
   const [selectedMovieTitle, setSelectedMovieTitle] = useState('');
   const [postText, setPostText] = useState('');
-  const [postImage, setPostImage] = useState(null); // State to hold the selected image file
+  const [postImage, setPostImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -20,64 +20,81 @@ const PostTab = ({ isVisible, onClose }) => {
       setError('Please provide both a movie and your thoughts.');
       return;
     }
-
+  
     setIsLoading(true);
     setError('');
-
+  
     try {
-      // Create the post object
       const postBody = JSON.stringify({
         content: postText.trim(),
         movie: selectedMovieTitle,
         movieId: selectedMovieId,
       });
-
-      // Send the post request
+  
       const response = await fetch('/api/posts/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Include authorization headers if required
         },
         body: postBody,
       });
-
+  
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.message || 'Failed to create post');
       }
-
+  
       // Parse response to get postId
       const responseData = await response.json();
       const postId = responseData.post._id;
-
+  
       console.log('Post created successfully');
       console.log('Post ID:', postId);
-
+  
       // Upload the image if available
       if (postImage) {
         const formData = new FormData();
         formData.append('postImage', postImage);
-
+  
         try {
           const imageResponse = await fetch(`/api/posts/uploadPostImage/${postId}`, {
             method: 'POST',
             body: formData,
             credentials: 'include',
           });
-
+  
           if (!imageResponse.ok) {
             throw new Error(`Failed to upload post image. Status: ${imageResponse.status}`);
           }
-
+  
           const imageData = await imageResponse.json();
           console.log('Post Image Uploaded:', imageData);
+  
+          // If image upload is successful, update the post with the imageUrl
+          const updatedPostBody = JSON.stringify({
+            imageUrl: imageData.imagePath, // Use the imagePath returned from the server
+          });
+  
+          const updateResponse = await fetch(`/api/posts/${postId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: updatedPostBody,
+          });
+  
+          if (!updateResponse.ok) {
+            const data = await updateResponse.json();
+            throw new Error(data.message || 'Failed to update post');
+          }
+  
+          console.log('Post updated with image URL');
         } catch (error) {
           console.error('Error uploading post image:', error);
         }
       }
-
-      onClose(); // Optionally close the modal on successful creation
+  
+      onClose();
     } catch (error) {
       setError(error.message || 'An error occurred while creating the post.');
       console.error('Error creating post:', error);
@@ -85,12 +102,13 @@ const PostTab = ({ isVisible, onClose }) => {
       setIsLoading(false);
     }
   };
+  
 
   useEffect(() => {
     const fetchMovies = async () => {
       if (searchTerm.length > 2) {
         try {
-          const apiKey = '3c4682174e03411b1f2ea9d887d0b8f3'; // Use your actual API key
+          const apiKey = '3c4682174e03411b1f2ea9d887d0b8f3';
           const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(searchTerm)}`;
           const response = await fetch(url);
           const data = await response.json();

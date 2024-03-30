@@ -237,7 +237,7 @@ const updatePost = async (req, res) => {
     try {
       const postId = req.params.id;
       const { content } = req.body;
-      let { imageUrl } = req.body; // Get imageUrl from request body
+      let { imageUrl } = req.body;
   
       const post = await Post.findById(postId);
       if (!post) {
@@ -251,9 +251,8 @@ const updatePost = async (req, res) => {
   
       // If there's a post image uploaded, update the imageUrl
       if (req.file) {
-        // Assuming you're using multer to handle file uploads
-        // Update imageUrl with the path to the uploaded image
-        imageUrl = req.file.path; // Update imageUrl with the path of the uploaded image
+
+        imageUrl = req.file.path; 
       }
   
       // Update the post content and imageUrl if provided
@@ -264,10 +263,8 @@ const updatePost = async (req, res) => {
         post.imageUrl = imageUrl;
       }
   
-      // Save the updated post to the database
       await post.save();
   
-      // Send a success response with the updated post
       res.status(200).json({ message: "Post updated successfully", post });
     } catch (error) {
       console.error(error);

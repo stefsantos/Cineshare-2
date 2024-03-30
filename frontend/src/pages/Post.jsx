@@ -125,7 +125,7 @@ function Post({ post }) {
         }, 10); 
       };
     
-    return (
+      return (
         <div className = "post">
             <h4>
                 {post.user === activeusername ? (
@@ -158,8 +158,6 @@ function Post({ post }) {
             <small>{post.timestamp}</small>
             <CommentPopup isOpen={showComments} onClose={closeComments} post={post} />
         </div>
-
-        
     );
 }
 

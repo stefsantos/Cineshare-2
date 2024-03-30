@@ -48,6 +48,7 @@ router.get('/favoriteMovies/', protectRoute, getFavoriteMovies);
 router.post('/favoriteMovies/delete', protectRoute, deleteFromFavoriteMovies);
 router.post('/favoriteMovies/delete', protectRoute, deleteFromFavoriteMovies);
 
+// Routes for uploading images
 router.post('/uploadProfilePic/:userid', protectRoute, upload.single('profilePic'), (req, res, next) => {
     console.log('Profile Pic:', req.file); // Log the uploaded profile picture
     uploadProfilePic(req, res, next);
