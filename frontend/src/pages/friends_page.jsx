@@ -82,7 +82,7 @@ function friends_page() {
                     {userFollowers.map((follower) => (
                         <div key={follower.id} className="friend_profile">
                             <img
-                                src={follower.profilepic ? `http://localhost:4000/${follower.profilepic}` : `images/defaultAvatar.jpg`}
+                                src={follower.profilepic ? `images/${follower.profilepic}.jpg` : `images/defaultAvatar.jpg`}
                                 alt="avatar"
                                 className="friend_avatar"
                             />
@@ -109,7 +109,7 @@ function friends_page() {
               userFollowing.map((following) => (
                   <div key={following.id} className="friend_request">
                       <img
-                          src={following.profilepic ? `http://localhost:4000/${following.profilepic}` : `images/defaultAvatar.jpg`}
+                          src={following.profilepic ? `images/${following.profilepic}.jpg` : `images/defaultAvatar.jpg`}
                           alt="avatar"
                           className="request_avatar"
                       />
