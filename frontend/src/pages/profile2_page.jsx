@@ -146,18 +146,21 @@ const profileAvatars = {
                 </div>
                 
                 <div className="post_container">
-                    {posts.map((post, index) => (
-                        <Post key={index} post={{
-                            _id: post._id,
-                            user: post.postedBy.username,
-                            movieId: post.movieId,
-                            movie: post.movie,
-                            content: post.content,
-                            imageUrl: post.imageUrl,
-                            timestamp: new Date(post.createdAt).toLocaleDateString(),
-            
-                        }} />
-                    ))}
+                    {posts.length > 0 ? (
+                        posts.map((post, index) => (
+                            <Post key={index} post={{
+                                _id: post._id,
+                                user: post.postedBy.username,
+                                movieId: post.movieId,
+                                movie: post.movie,
+                                content: post.content,
+                                imageUrl: post.imageUrl,
+                                timestamp: new Date(post.createdAt).toLocaleDateString(),
+                            }} />
+                        ))
+                    ) : (
+                        <p>User has not posted.</p>
+                    )}
                 </div>
 
                 <div className="favorites_container">
