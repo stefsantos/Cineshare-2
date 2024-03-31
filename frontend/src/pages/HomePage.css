@@ -94,19 +94,17 @@
     margin-bottom: 20px;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .userposts::-webkit-scrollbar,
 .rightsidebar::-webkit-scrollbar,
 .homepage::-webkit-scrollbar {
     display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .userposts,
 .rightsidebar
 .homepage {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  
+    scrollbar-width: none;  
 }
 
 .home_movie-poster {

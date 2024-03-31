@@ -11,7 +11,7 @@ import Friends from "./pages/friends_page";
 import Watchlist from "./pages/watchlist_page";
 import MyProfile from "./pages/myprofile_page";
 import OtherProfile from "./pages/profile2_page";
-
+import AdminPage from "./pages/admin_page";
 
 import {
     BrowserRouter as Router,
@@ -48,6 +48,7 @@ function App() {
             <Route path="/createacct_page" element={<PlaceholderContainer><CreateAcct setShowNavbar={setShowNavbar}/></PlaceholderContainer>} />
             <Route path="/profile2_page" element={<PlaceholderContainer><OtherProfile setShowNavbar={setShowNavbar}/></PlaceholderContainer>} />
             <Route path="/profile/:username" element={<OtherProfile />} />
+            <Route path="/admin_page" element={<PlaceholderContainer><AdminPage /></PlaceholderContainer>} />
           </Routes>
       </Router>
     </>

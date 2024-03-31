@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { Nav, NavLink, Bars, NavMenu, LogoutContainer } from "./NavBarElements";
 import { FaHome, FaUserFriends, FaList, FaPencilAlt } from "react-icons/fa";
+import { RiAdminFill } from "react-icons/ri";
 import { BiSolidCameraMovie } from "react-icons/bi";
 import PostTab from '../../src/pages/PostTab';
 import { useUser } from '../../src/UserContext';
@@ -85,6 +86,10 @@ const Navbar = () => {
                     <NavLink to="/watchlist_page">
                         <FaList style={{ marginRight: '8px' }} />
                         Watchlist
+                    </NavLink>
+                    <NavLink to="/admin_page">
+                        <RiAdminFill style={{ marginRight: '8px' }} />
+                        Admin Page
                     </NavLink>
                     <br></br>
                     <button onClick={handlePostClick} style={{ backgroundColor: "#A949F5", border: 'none', cursor: 'pointer', padding: '10px' }}>
