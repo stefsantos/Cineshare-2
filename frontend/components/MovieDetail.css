@@ -1,5 +1,12 @@
+.details-page {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .watchlist-button {
     background-color: #A949F5;
+    margin-left: 10px;
 }
 
 .watchlist-button-added {
@@ -7,8 +14,27 @@
 }
 
 .reviews {
+    padding-right: 10px; 
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #000000;
+    box-shadow: 0px 0px 2px 2px #000000, 0px 0px 2px 2px #FFFFFF;
+    margin-top: 50px;
+    border-radius: 8px;
+    margin-bottom: 20px;
     display: flex;
-    justify-content: center;
+    text-align: center;
     align-items: center;
-    flex-direction: column; 
-}  
+    flex-direction: column;
+    
+}
+
+.reviews::-webkit-scrollbar {
+    display: none;
+}
+
+.reviews {
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
