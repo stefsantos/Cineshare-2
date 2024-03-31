@@ -1,7 +1,13 @@
+body {
+    display: flex;
+    justify-content: center;
+}
+
 .details-page {
     display: flex;
     justify-content: center;
     flex-direction: column;
+    width: 60vw;
 }
 
 .watchlist-button {
