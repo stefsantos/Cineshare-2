@@ -85,20 +85,51 @@ color: rgb(51, 51, 51);
     grid-template-columns: repeat(3, 1fr); /* Creates three columns */
     grid-gap: 20px;
     margin-top: 20px;
-  }
-  
-  .grid-item {
-    background-color: #363636;
-    height: 150px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #ddd;
-  }
+}
 
-  .grid-item:hover {
-    
-    transform: scale(1.05);
+.grid-item {
+  background-color: #363636;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #ddd;
+}
 
-  }
+.grid-item:hover {
   
+  transform: scale(1.05);
+
+}
+
+.pic-upload {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.pfp-upload {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.banner-upload {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-input {
+  display: none; 
+}
+
+.upload-button {
+  background-color: #53369c; 
+  color: #fff; 
+  padding: 10px 10px; 
+  border: none; 
+  cursor: pointer; /
+}

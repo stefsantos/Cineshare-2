@@ -109,16 +109,30 @@ const EditProfileTab = ({ isVisible, onClose }) => {
             value={bio}
             onChange={(e) => setBio(e.target.value)} // Update bio state onChange
           ></textarea>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setProfilePicFile(e.target.files[0])} // Update profile picture state onChange
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setBannerFile(e.target.files[0])} // Update banner state onChange
-          />
+          <div classname="pic-upload">
+            <div className="pfp-upload">
+              <label htmlFor="profilePicUpload">Upload Profile Picture</label>
+              <input
+                id="profilePicUpload"
+                className="file-input"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfilePicFile(e.target.files[0])} // Update profile picture state onChange
+              />
+              <button className="upload-button" onClick={() => document.getElementById('profilePicUpload').click()}>Choose File</button>
+            </div>
+            <div className="banner-upload">
+              <label htmlFor="bannerUpload">Upload Banner</label>
+              <input
+                id="bannerUpload"
+                className="file-input"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setBannerFile(e.target.files[0])} // Update banner state onChange
+              />
+              <button className="upload-button" onClick={() => document.getElementById('bannerUpload').click()}>Choose File</button>
+            </div>
+          </div>
         </div>
         <div className="modal-footer">
           <button className="button cancel-button" onClick={onClose}>

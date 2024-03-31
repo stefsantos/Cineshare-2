@@ -179,11 +179,17 @@ const PostTab = ({ isVisible, onClose }) => {
             value={postText}
             onChange={handlePostTextChange}
           ></textarea>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
+          <div className="pic-upload">
+            <label htmlFor="pic-upload">Upload Picture</label>
+            <input
+              id="picUpload"
+              type="file"
+              className="file-input"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
+            <button className="upload-button" onClick={() => document.getElementById('picUpload').click()}>Choose File</button>
+          </div>
           {error && <div className="error-message">{error}</div>}
         </div>
         <div className="modal-footer">

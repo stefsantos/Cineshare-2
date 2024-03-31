@@ -150,4 +150,21 @@
     border-radius: 4px;
 }
 
+.file-input {
+    display: none; 
+}
+  
+.upload-button {
+    background-color: #53369c; 
+    color: #fff; 
+    padding: 10px 10px; 
+    border: none; 
+    cursor: pointer; 
+}
+
+.pic-upload {
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
   
