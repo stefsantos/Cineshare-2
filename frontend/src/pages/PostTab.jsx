@@ -95,6 +95,10 @@ const PostTab = ({ isVisible, onClose }) => {
       }
   
       onClose();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 10); 
     } catch (error) {
       setError(error.message || 'An error occurred while creating the post.');
       console.error('Error creating post:', error);
