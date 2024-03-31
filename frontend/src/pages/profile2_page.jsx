@@ -136,18 +136,9 @@ const profileAvatars = {
         <div className="page">
             <div className="content_container">
                 <div className="profile_container">
-                <img 
-  src={userProfile.banner ? userProfile.banner : `/images/defaultBanner.jpg`} 
-  className="profile_banner" 
-  alt={activeusername} 
-/>
-<img 
-  src={userProfile.profilepic ? userProfile.profilepic : `/images/defaultAvatar.jpg`} 
-  className="profile_avatar avatar" 
-  alt={activeusername} 
-/>
+                    <img src={userProfile.banner ? `http://localhost:4000/${userProfile.banner}` : '/images/defaultBanner.jpg'} className="profile_banner" alt={activeusername} />
+                    <img src={userProfile.profilepic ? `http://localhost:4000/${userProfile.profilepic}` : '/images/defaultAvatar.jpg'} className="profile_avatar avatar" alt={activeusername} />
 
-        
                     <div className="profile_name">{username}</div>
                     <div className="profile_bio">{userProfile.bio || 'No bio available'}</div>
         
