@@ -195,7 +195,7 @@ function Movie() {
     const categoryUrls = {
         nowPlaying: 'https://api.themoviedb.org/3/movie/now_playing?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
         popular: 'https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
-        toprated: 'https://api.themoviedb.org/3/movie/top_rated?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
+        topRated: 'https://api.themoviedb.org/3/movie/top_rated?api_key=3c4682174e03411b1f2ea9d887d0b8f3',
         upcoming: `https://api.themoviedb.org/3/discover/movie?api_key=3c4682174e03411b1f2ea9d887d0b8f3&primary_release_date.gte=${new Date().toISOString().split('T')[0]}&sort_by=release_date.asc`,
     };
 
