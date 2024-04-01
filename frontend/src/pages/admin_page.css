@@ -61,7 +61,6 @@
 }
 
 .admin-userposts {
-    padding-right: 10px; 
     width: 90%;
     height: 100vh;
     overflow-y: auto;
@@ -76,7 +75,6 @@
 }
 
 .admin-reports {
-    padding-right: 10px; 
     width: 90%;
     height: 100vh;
     overflow-y: auto;
