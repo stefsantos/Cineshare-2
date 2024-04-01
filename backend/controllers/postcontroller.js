@@ -90,13 +90,15 @@ const getPost = async (req, res) => {
 
 const deletePost = async (req, res) => {
 
+    const adminId = "660968f9677e962852eee30b";
+
     try {
         const post = await Post.findById(req.params.id);
         if (!post) {
             return res.status(404).json({ message: "post not found" });
         }
 
-        if (post.postedBy.toString() !== req.user._id.toString()) {
+        if (post.postedBy.toString() !== req.user._id.toString() && req.user._id.toString() !== adminId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
