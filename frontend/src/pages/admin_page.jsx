@@ -47,7 +47,8 @@ function adminPage() {
                                 movie: post.movie,
                                 content: post.content,
                                 imageUrl: post.imageUrl,
-                                timestamp: new Date(post.createdAt).toLocaleDateString() // Adjust the date format as per your needs
+                                timestamp: new Date(post.createdAt).toLocaleDateString(),
+                                isFlagged: post.isFlagged
                             }} />
                         ))
                     )}     
@@ -60,7 +61,24 @@ function adminPage() {
                 </div>
 
                 <div className="admin-reports">
-                    hi
+                    {loading ? (
+                        <p>Loading posts...</p>
+                    ) : posts.filter(post => post.isFlagged).length > 0 ? (
+                        posts.filter(post => post.isFlagged).map((post, index) => (
+                            <Post key={index} post={{
+                                _id: post._id,
+                                user: post.postedBy ? post.postedBy.username : 'deleteduser',
+                                movieId: post.movieId,
+                                movie: post.movie,
+                                content: post.content,
+                                imageUrl: post.imageUrl,
+                                timestamp: new Date(post.createdAt).toLocaleDateString(),
+                                isFlagged: post.isFlagged
+                            }} />
+                        ))
+                    ) : (
+                        <p>No reported posts.</p>
+                    )}
                 </div>
             </div>
         </div>

@@ -150,6 +150,9 @@ function Post({ post }) {
             <div className='postactions'>
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
                 <div className='comment' onClick={openComments}></div>
+                {post.user !== activeusername && (
+                    <div className='report' onClick={openComments}></div>
+                )}
                 {post.user === activeusername || activeusername === "admin123" && (
                     <div className='delete' onClick={handleDeletePost}></div>
                 )}

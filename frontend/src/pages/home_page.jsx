@@ -29,6 +29,7 @@ function HomePage() {
             }
             const data = await response.json();
             setPosts(data.feedPosts);
+            console.log(data);
         } catch (error) {
             console.error("Error fetching posts:", error);
             setError("Error fetching posts. Please try again later.");
@@ -100,7 +101,8 @@ function HomePage() {
                                         movie: post.movie,
                                         content: post.content,
                                         imageUrl: post.imageUrl,
-                                        timestamp: new Date(post.createdAt).toLocaleDateString() // Adjust the date format as per your needs
+                                        timestamp: new Date(post.createdAt).toLocaleDateString(),
+                                        isFlagged: post.isFlagged
                                     }} />
                                 ))
                             )}

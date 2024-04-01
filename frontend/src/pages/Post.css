@@ -60,7 +60,7 @@
     font-size: 12px;
 }
 
-.heart, .comment, .delete {
+.heart, .comment, .delete, .report {
     margin-top: 10px;
     margin-bottom: 10px;
     background-image: url('sprites2.png'); 
@@ -90,6 +90,13 @@
 .delete {
     background-position: -150px -294px; 
     margin-left: auto;
+}
+
+.report {
+    margin-right: 5px;
+    background-position: -231.96px -367px;
+    width: 20px; 
+    height: 20px;
 }
 
 .heart:hover, .comment:hover, .delete:hover {

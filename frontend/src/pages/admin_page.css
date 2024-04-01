@@ -91,7 +91,11 @@
     display: none;
 }
 
-.admin-userposts, .rightsidebar, .page_container {
+.admin-reports::-webkit-scrollbar, .rightsidebar::-webkit-scrollbar, .page_container::-webkit-scrollbar {
+    display: none;
+}
+
+.admin-userposts, .rightsidebar, .page_container, .admin-reports {
     -ms-overflow-style: none;  
     scrollbar-width: none;  
 }
