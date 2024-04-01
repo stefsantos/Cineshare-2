@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './HomePage.css';
 import { Link } from 'react-router-dom'
 import './Post.css';
-import CommentPopup from './CommentPopup';
+import CommentSection from './CommentSection';
 import { useUser } from '../../src/UserContext';
 
 function Post({ post }) {
@@ -82,15 +82,10 @@ function Post({ post }) {
         }
     };
 
-    // Function to open the comment pop-up
-    const openComments = () => {
-        setShowComments(true);
+    // Function to open the comment section
+    const toggleCommentsVisibility = () => {
+        setShowComments(!showComments);
     };
-
-    // Function to close the comment pop-up
-    const closeComments = () => {
-        setShowComments(false);
-    }
 
     const handleDeletePost = async (e) => {
         try {
@@ -173,7 +168,7 @@ function Post({ post }) {
             )}
             <div className='postactions'>
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
-                <div className='comment' onClick={openComments}></div>
+                <div className='comment' onClick={toggleCommentsVisibility}></div>
                 {post.user !== activeusername && (
                     <div className='report' onClick={handleFlagPost}></div>
                 )}
@@ -183,7 +178,7 @@ function Post({ post }) {
             </div>
             <div className='like-counter'>{likeCount} {likeCount == 1 ? 'like' : 'likes'}</div>
             <small>{post.timestamp}</small>
-            <CommentPopup isOpen={showComments} onClose={closeComments} post={post} />
+            {showComments && <CommentSection post={post} />}
         </div>
     );
 }
