@@ -194,26 +194,35 @@ const getAllFeedPosts = async (req, res) => {
 const getFriendFeedPosts = async (req, res) => {
     try {
         const userId = req.user._id;
-        const user = await User.findById(userId).populate('postedBy', 'username');
 
+        // Retrieve the logged-in user's following list. Make sure the following field is indexed.
+        const user = await User.findById(userId).select('following');
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found. Make sure you're logged in and try again." });
         }
-
-        const following = user.following;
-
-        const feedPosts = await Post.find({postedBy: { $in: following }}).sort({createdAt: -1});
-
-        if (feedPosts.length === 0) {
-            return res.status(404).json({ message: "No friend feed posts found" });
-        }
-        res.status(200).json({ message: "Friend feed posts found", feedPosts });
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
         
+        if (user.following.length === 0) {
+            // If the user isn't following anyone, return an early response
+            return res.status(200).json({ message: "You're not following anyone yet. Follow someone to see their posts here." });
+        }
+
+        // Fetch posts only from users the logged-in user is following, sorted by createdAt
+        const feedPosts = await Post.find({
+            'postedBy': { $in: user.following }
+        })
+        .populate('postedBy', 'username')
+        .sort({createdAt: -1})
+        .limit(20); // Consider adding pagination to limit the number of posts
+
+        // Return the posts if found
+        res.status(200).json({message: "Feed posts found", feedPosts});
+    } catch (error) {
+        console.error("Error fetching friend feed posts:", error);
+        res.status(500).json({ message: "An error occurred while trying to fetch the feed. Please try again later." });
     }
-}
+};
+
+
 
 const getUserPosts = async (req, res) => {
     try {

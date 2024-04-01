@@ -5,14 +5,20 @@ import { Link } from 'react-router-dom';
 
 function HomePage() {
     const [posts, setPosts] = useState([]);
+    const [currentFilter, setCurrentFilter] = useState('all'); // State to track current filter
     const [loading, setLoading] = useState(false);
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchAllPosts();
+        // Fetch posts based on the current filter
+        if (currentFilter === 'all') {
+            fetchAllPosts();
+        } else {
+            fetchFriendPosts();
+        }
         fetchTrendingMovies();
-    }, []);
+    }, [currentFilter]); // Re-fetch posts when the currentFilter changes
 
     const fetchAllPosts = async () => {
         setLoading(true);
@@ -30,7 +36,23 @@ function HomePage() {
             setLoading(false);
         }
     };
-    
+
+    const fetchFriendPosts = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/posts/friendfeed'); // Adjust the URL to your friend feed endpoint
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setPosts(data.feedPosts); // Adjust this based on your API response structure
+        } catch (error) {
+            console.error("Error fetching friend posts:", error);
+            setError("Error fetching friend posts. Please try again later.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchTrendingMovies = async () => {
         try {
@@ -54,6 +76,14 @@ function HomePage() {
             <div className='title'>
                 <h1>CineShare</h1>
                 <h2>Home</h2>
+            </div>
+            <div className='filter-buttons'>
+                <button onClick={() => setCurrentFilter('all')} className={currentFilter === 'all' ? 'active' : ''}>
+                    All Feed
+                </button>
+                <button onClick={() => setCurrentFilter('friends')} className={currentFilter === 'friends' ? 'active' : ''}>
+                    Friends Feed
+                </button>
             </div>
             <div className='homepage'>
                 <center>

@@ -1,175 +1,131 @@
 /* Full screen layout with sidebar */
 .signin-fullscreen {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-color: #1d1d1d; 
-  }
-  
-  
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #1d1d1d;
+}
+
 .signin-side-bar {
-    width: 40%; 
-    background-color: #101e33; 
-    height: 100%; 
-    color: #ffffff; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: 40%; /* Sidebar will always take up 40% width */
+  background-color: #101e33;
+  height: 100%;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .signin-side-bar img {
   max-width: 100%;
   max-height: 100%;
   border-radius: 20px;
-  animation: fadeIn 1s ease-in-out, floatLogo 4s infinite ease-in-out;
 }
 
-@keyframes fadeIn {
-  0% {
-      opacity: 0;
-  }
-  100% {
-      opacity: 1;
-  }
+.signin-container {
+  width: 60%; /* Remaining screen space for signin-container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@keyframes floatLogo {
-  0%, 100% {
-      transform: translateY(0);
-  }
-  50% {
-      transform: translateY(-10px);
-  }
+.login-container {
+  background-color: #222831;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #EEEEEE;
+  margin-top: 0; /* Adjusted to stay on screen without hover */
+  transition: margin-top 1s ease-in-out 0.6s;
 }
 
-  .signin-side-bar {
-    width: 0;
-    background-color: #101e33; 
-    height: 100%; 
-    color: #ffffff; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    transition: width 1s;
+.login-form h2 {
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #393E46;
+  background-color: #393E46;
+  border-radius: 4px;
+  color: #EEEEEE;
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.remember-forgot label {
+  display: flex;
+  align-items: center;
+  color: #EEEEEE;
+}
+
+.remember-forgot input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.signin-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #101e33;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signin-button:hover {
+  background-color: #007c7a;
+}
+
+/* Link to sign up page */
+.signup-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #00adb5;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .signin-fullscreen {
+    flex-direction: column;
   }
 
-  .signin-fullscreen:hover .signin-side-bar {
-    width: 40%;
-  }
-
-  .signin-fullscreen:hover .login-container {
-    margin-top: 0;
-  }
-  
+  .signin-side-bar,
   .signin-container {
-    width: 60%; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    height: 50%;
   }
 
   .login-container {
-    background-color: #222831; 
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); 
-    width: 100%;
-    max-width: 400px; 
-    text-align: center;
-    color: #EEEEEE; 
-    margin-top: -150%; 
-    transition: margin-top 1s ease-in-out 0.6s;
+    margin-top: 0; /* Adjust for mobile */
+  }
 }
-  
- 
-  .login-form h2 {
-    margin-bottom: 20px;
-  }
-  
-  .input-group {
-    margin-bottom: 20px;
-  }
-  
-  .input-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #393E46; 
-    background-color: #393E46; 
-    border-radius: 4px;
-    color: #EEEEEE; 
-  }
-  
-  
-  .remember-forgot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .remember-forgot label {
-    display: flex;
-    align-items: center;
-    color: #EEEEEE; 
-  }
-  
-  .remember-forgot input[type="checkbox"] {
-    margin-right: 5px;
-  }
-  
-  
-  .signin-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background-color: #101e33; 
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .signin-button:hover {
-    background-color: #007c7a; 
-  }
-  
-  /* Link to sign up page */
-  .signup-link {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .text-button {
-    background: none;
-    border: none;
-    color: #00adb5; 
-    cursor: pointer;
-  }
-  
-  .text-button:hover {
-    text-decoration: underline;
-  }
-  
-  
-  @media (max-width: 768px) {
-    .signin-fullscreen {
-      flex-direction: column;
-    }
-  
-    .signin-side-bar,
-    .signin-container {
-      width: 100%;
-      height: 50%;
-    }
-  
-    .login-container {
-      margin-top: -20%; 
-    }
-  }
-  

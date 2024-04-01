@@ -150,7 +150,7 @@ function MovieDetail() {
     
 
     return (
-        <div className="details-page">
+        <div>
             {movieDetails && (
                 <div style={{ display: 'flex', alignItems: 'center', margin: '20px' }}>
                     <div>
@@ -169,12 +169,11 @@ function MovieDetail() {
                     </div>
                 </div>
             )}
-            <div className="details-buttons">
-                <button onClick={handleBack} style={{ marginTop: '10px', marginLeft: '20px', color: 'white'}}>Back</button>
-                <button onClick={addToWatchlist} className={isAddedToWatchlist ? "watchlist-button-added" : "watchlist-button"}>
-                    {isAddedToWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
-                </button>
-            </div>
+            
+            <button onClick={handleBack} style={{ marginTop: '10px', marginLeft: '20px', color: 'white'}}>Back</button>
+            <button onClick={addToWatchlist} className={isAddedToWatchlist ? "watchlist-button-added" : "watchlist-button"}>
+                {isAddedToWatchlist ? 'Added to Watchlist' : 'Add to Watchlist'}
+            </button>
             {renderPosts()}
         </div>
     );

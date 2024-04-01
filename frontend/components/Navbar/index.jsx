@@ -118,7 +118,7 @@ const Navbar = () => {
 
 
                     <button onClick={handleLogout} style={{ border: 'none', backgroundColor: 'transparent', cursor: 'pointer', color: 'white', fontSize: '20px' }}>
-                        Logout
+                    Logout
                     </button>
                 </LogoutContainer>
             </Nav>

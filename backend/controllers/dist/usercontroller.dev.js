@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.deleteFromWatchlist = exports.getWatchlist = exports.checkWatchlist = exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = void 0;
+exports.deleteFromFavoriteMovies = exports.getFavoriteMovies = exports.checkFavoriteMovies = exports.addToFavoriteMovies = exports.deleteFromWatchlist = exports.getWatchlist = exports.checkWatchlist = exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = exports.uploadBanner = exports.uploadProfilePic = void 0;
 
 var _userModel = _interopRequireDefault(require("../models/userModel.js"));
 
@@ -305,37 +305,39 @@ var loginUser = function loginUser(req, res) {
           }));
 
         case 12:
-          // Assuming JWT_SECRET is your secret key for signing JWTs
           token = _jsonwebtoken["default"].sign({
             _id: user._id
           }, process.env.JWT_SECRET, {
             expiresIn: '1h'
-          }); // Send the token back to the client
-
+          });
+          res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: 3600000,
+            secure: process.env.NODE_ENV === 'production'
+          });
           res.status(200).json({
             _id: user._id,
             username: user.username,
             email: user.email,
-            token: token // Send the token back to the client
-
+            token: token
           });
-          _context5.next = 20;
+          _context5.next = 21;
           break;
 
-        case 16:
-          _context5.prev = 16;
+        case 17:
+          _context5.prev = 17;
           _context5.t1 = _context5["catch"](0);
           console.error("Error in loginUser:", _context5.t1.message);
           res.status(500).json({
             message: "Server Error"
           });
 
-        case 20:
+        case 21:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[0, 16]]);
+  }, null, null, [[0, 17]]);
 };
 
 exports.loginUser = loginUser;
@@ -347,7 +349,7 @@ var logoutUser = function logoutUser(req, res) {
         case 0:
           try {
             res.cookie("jwt", "", {
-              maxAge: 1
+              expires: new Date(0)
             });
             res.status(200).json({
               message: "User logged out"
@@ -481,14 +483,14 @@ var followUnfollowUser = function followUnfollowUser(req, res) {
 exports.followUnfollowUser = followUnfollowUser;
 
 var updateUser = function updateUser(req, res) {
-  var _req$body3, username, email, password, profilepic, bio, watchlist, favMovies, userId, user, salt, hashedPassword;
+  var _req$body3, username, email, password, profilepic, banner, bio, watchlist, favMovies, userId, user, salt, hashedPassword;
 
   return regeneratorRuntime.async(function updateUser$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
           _context8.prev = 0;
-          _req$body3 = req.body, username = _req$body3.username, email = _req$body3.email, password = _req$body3.password, profilepic = _req$body3.profilepic, bio = _req$body3.bio, watchlist = _req$body3.watchlist, favMovies = _req$body3.favMovies;
+          _req$body3 = req.body, username = _req$body3.username, email = _req$body3.email, password = _req$body3.password, profilepic = _req$body3.profilepic, banner = _req$body3.banner, bio = _req$body3.bio, watchlist = _req$body3.watchlist, favMovies = _req$body3.favMovies;
           userId = req.user._id;
           _context8.next = 5;
           return regeneratorRuntime.awrap(_userModel["default"].findById(userId));
@@ -527,34 +529,35 @@ var updateUser = function updateUser(req, res) {
           user.username = username || user.username;
           user.email = email || user.email;
           user.profilepic = profilepic || user.profilepic;
+          user.banner = banner || user.banner;
           user.bio = bio || user.bio;
           user.watchlist = watchlist || user.watchlist;
           user.favMovies = favMovies || user.favMovies;
-          _context8.next = 24;
+          _context8.next = 25;
           return regeneratorRuntime.awrap(user.save());
 
-        case 24:
+        case 25:
           res.status(200).json({
             message: "User updated",
             user: user
           });
-          _context8.next = 31;
+          _context8.next = 32;
           break;
 
-        case 27:
-          _context8.prev = 27;
+        case 28:
+          _context8.prev = 28;
           _context8.t0 = _context8["catch"](0);
           console.error("Error in updateUser:", _context8.t0);
           res.status(500).json({
             message: "Server Error"
           });
 
-        case 31:
+        case 32:
         case "end":
           return _context8.stop();
       }
     }
-  }, null, null, [[0, 27]]);
+  }, null, null, [[0, 28]]);
 };
 
 exports.updateUser = updateUser;
@@ -805,3 +808,348 @@ var deleteFromWatchlist = function deleteFromWatchlist(req, res) {
 };
 
 exports.deleteFromWatchlist = deleteFromWatchlist;
+
+var addToFavoriteMovies = function addToFavoriteMovies(req, res) {
+  var movieId, userId, updatedUser;
+  return regeneratorRuntime.async(function addToFavoriteMovies$(_context13) {
+    while (1) {
+      switch (_context13.prev = _context13.next) {
+        case 0:
+          _context13.prev = 0;
+          // Extract the movieId from the request body
+          movieId = req.body.movieId; // Ensure a movieId is provided
+
+          if (movieId) {
+            _context13.next = 4;
+            break;
+          }
+
+          return _context13.abrupt("return", res.status(400).json({
+            message: "Movie ID is required"
+          }));
+
+        case 4:
+          // Use the authenticated user's ID from req.user added by the protectRoute middleware
+          userId = req.user._id; // Find the user and update their favorite movies to include the new movieId
+          // Using $addToSet to avoid duplicate movieIds in the favorite movies list
+
+          _context13.next = 7;
+          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+            $addToSet: {
+              favMovies: movieId
+            }
+          }, {
+            "new": true,
+            select: "-password"
+          } // Return the updated document without the password
+          ));
+
+        case 7:
+          updatedUser = _context13.sent;
+
+          if (updatedUser) {
+            _context13.next = 10;
+            break;
+          }
+
+          return _context13.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 10:
+          // Respond with a success message and the updated favorite movies list
+          res.status(200).json({
+            message: "Movie added to favorite movies successfully",
+            favMovies: updatedUser.favMovies
+          });
+          _context13.next = 17;
+          break;
+
+        case 13:
+          _context13.prev = 13;
+          _context13.t0 = _context13["catch"](0);
+          console.error("Error in addToFavoriteMovies:", _context13.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 17:
+        case "end":
+          return _context13.stop();
+      }
+    }
+  }, null, null, [[0, 13]]);
+};
+
+exports.addToFavoriteMovies = addToFavoriteMovies;
+
+var checkFavoriteMovies = function checkFavoriteMovies(req, res) {
+  var movieId, userId, user, isInFavoriteMovies;
+  return regeneratorRuntime.async(function checkFavoriteMovies$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _context14.prev = 0;
+          movieId = req.body.movieId; // Expecting movieId to be sent in the request body
+
+          userId = req.user._id; // Assuming you have middleware to set req.user
+
+          _context14.next = 5;
+          return regeneratorRuntime.awrap(_userModel["default"].findById(userId));
+
+        case 5:
+          user = _context14.sent;
+
+          if (user) {
+            _context14.next = 8;
+            break;
+          }
+
+          return _context14.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 8:
+          // Check if the movieId is in the user's favorite movies list
+          isInFavoriteMovies = user.favMovies.includes(movieId); // Respond with the result
+
+          res.status(200).json({
+            isInFavoriteMovies: isInFavoriteMovies
+          });
+          _context14.next = 16;
+          break;
+
+        case 12:
+          _context14.prev = 12;
+          _context14.t0 = _context14["catch"](0);
+          console.error("Error in checkFavoriteMovies:", _context14.t0.message);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 16:
+        case "end":
+          return _context14.stop();
+      }
+    }
+  }, null, null, [[0, 12]]);
+};
+
+exports.checkFavoriteMovies = checkFavoriteMovies;
+
+var getFavoriteMovies = function getFavoriteMovies(req, res) {
+  var userId, user;
+  return regeneratorRuntime.async(function getFavoriteMovies$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          _context15.prev = 0;
+          userId = req.user._id; // Extract the user ID set by your authentication middleware
+          // Find the user by their ID
+
+          _context15.next = 4;
+          return regeneratorRuntime.awrap(_userModel["default"].findById(userId).select('favMovies'));
+
+        case 4:
+          user = _context15.sent;
+
+          if (user) {
+            _context15.next = 7;
+            break;
+          }
+
+          return _context15.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 7:
+          // Respond with the user's favorite movies list
+          res.status(200).json({
+            favMovies: user.favMovies
+          });
+          _context15.next = 14;
+          break;
+
+        case 10:
+          _context15.prev = 10;
+          _context15.t0 = _context15["catch"](0);
+          console.error("Error in getFavoriteMovies:", _context15.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 14:
+        case "end":
+          return _context15.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+};
+
+exports.getFavoriteMovies = getFavoriteMovies;
+
+var deleteFromFavoriteMovies = function deleteFromFavoriteMovies(req, res) {
+  var movieId, userId, updatedUser;
+  return regeneratorRuntime.async(function deleteFromFavoriteMovies$(_context16) {
+    while (1) {
+      switch (_context16.prev = _context16.next) {
+        case 0:
+          _context16.prev = 0;
+          movieId = req.body.movieId;
+          userId = req.user._id;
+
+          if (movieId) {
+            _context16.next = 5;
+            break;
+          }
+
+          return _context16.abrupt("return", res.status(400).json({
+            message: "Movie ID is required"
+          }));
+
+        case 5:
+          _context16.next = 7;
+          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+            $pull: {
+              favMovies: movieId
+            }
+          }, {
+            "new": true,
+            select: "-password"
+          }));
+
+        case 7:
+          updatedUser = _context16.sent;
+
+          if (updatedUser) {
+            _context16.next = 10;
+            break;
+          }
+
+          return _context16.abrupt("return", res.status(404).json({
+            message: "User not found"
+          }));
+
+        case 10:
+          res.status(200).json({
+            message: "Movie removed from favorite movies successfully",
+            favMovies: updatedUser.favMovies
+          });
+          _context16.next = 17;
+          break;
+
+        case 13:
+          _context16.prev = 13;
+          _context16.t0 = _context16["catch"](0);
+          console.error("Error in deleteFromFavoriteMovies:", _context16.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 17:
+        case "end":
+          return _context16.stop();
+      }
+    }
+  }, null, null, [[0, 13]]);
+};
+
+exports.deleteFromFavoriteMovies = deleteFromFavoriteMovies;
+
+var uploadProfilePic = function uploadProfilePic(req, res) {
+  var user;
+  return regeneratorRuntime.async(function uploadProfilePic$(_context17) {
+    while (1) {
+      switch (_context17.prev = _context17.next) {
+        case 0:
+          _context17.prev = 0;
+
+          if (req.file) {
+            _context17.next = 3;
+            break;
+          }
+
+          return _context17.abrupt("return", res.status(400).json({
+            message: "No file uploaded"
+          }));
+
+        case 3:
+          user = req.user;
+          user.profilePic = req.file.path;
+          _context17.next = 7;
+          return regeneratorRuntime.awrap(user.save());
+
+        case 7:
+          res.status(200).json({
+            message: "Profile picture uploaded successfully",
+            profilePic: user.profilePic
+          });
+          _context17.next = 14;
+          break;
+
+        case 10:
+          _context17.prev = 10;
+          _context17.t0 = _context17["catch"](0);
+          console.error("Error uploading profile picture:", _context17.t0.message);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 14:
+        case "end":
+          return _context17.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+};
+
+exports.uploadProfilePic = uploadProfilePic;
+
+var uploadBanner = function uploadBanner(req, res) {
+  var user;
+  return regeneratorRuntime.async(function uploadBanner$(_context18) {
+    while (1) {
+      switch (_context18.prev = _context18.next) {
+        case 0:
+          _context18.prev = 0;
+
+          if (req.file) {
+            _context18.next = 3;
+            break;
+          }
+
+          return _context18.abrupt("return", res.status(400).json({
+            message: "No file uploaded"
+          }));
+
+        case 3:
+          user = req.user;
+          user.banner = req.file.path;
+          _context18.next = 7;
+          return regeneratorRuntime.awrap(user.save());
+
+        case 7:
+          res.status(200).json({
+            message: "Banner uploaded successfully",
+            banner: user.banner
+          });
+          _context18.next = 14;
+          break;
+
+        case 10:
+          _context18.prev = 10;
+          _context18.t0 = _context18["catch"](0);
+          console.error("Error uploading banner:", _context18.t0.message);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 14:
+        case "end":
+          return _context18.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+};
+
+exports.uploadBanner = uploadBanner;
