@@ -26,6 +26,10 @@ const postSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
+    isFlagged: {
+        type: Boolean,
+        default: false
+    },
     replies: [{
         userId: {
             type: mongoose.Schema.Types.ObjectId,

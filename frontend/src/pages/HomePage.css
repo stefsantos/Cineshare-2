@@ -121,4 +121,13 @@
     z-index: 10;
 }
 
+.filter-buttons {
+    width: 100%;
+    display: flex;
+    padding-left: 90px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
 

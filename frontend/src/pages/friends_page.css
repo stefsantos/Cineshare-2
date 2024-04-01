@@ -409,4 +409,10 @@
 .search-button:focus {
     outline: none;
 }
+
+.search-subheader {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 35px; 
+    font-weight: 700; 
+}
   

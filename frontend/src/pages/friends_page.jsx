@@ -66,9 +66,13 @@ function friends_page() {
         <div className="friends_container">
             <div className="friends_header">
                 Followers
-                <button onClick={handleSearchClick} className="search-button">
-                    <FaSearch/>
-                </button>
+
+                <div className="search-subheader">
+                  Search User
+                  <button onClick={handleSearchClick} className="search-button">
+                      <FaSearch/>
+                  </button>
+                </div>
             </div>
 
             {userFollowers.length === 0 ? (
