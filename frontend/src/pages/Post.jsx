@@ -119,6 +119,30 @@ function Post({ post }) {
         }
     }
 
+    const handleFlagPost = async (e) => {
+        try {
+            console.log(post);
+
+            e.preventDefault();
+            if(!window.confirm('Are you sure you want to flag this post?')) return;
+
+            const res = await fetch(`api/posts/flag/${post._id}`, {
+                method: 'POST',
+            });
+
+            const data = await res.json();
+            
+            if (data.error) {
+                console.log(data.error);
+                return;
+            }
+            console.log(data.message);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     const handleReloadClick = () => {
         setTimeout(() => {
           window.location.reload();
@@ -151,7 +175,7 @@ function Post({ post }) {
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
                 <div className='comment' onClick={openComments}></div>
                 {post.user !== activeusername && (
-                    <div className='report' onClick={openComments}></div>
+                    <div className='report' onClick={handleFlagPost}></div>
                 )}
                 {post.user === activeusername || activeusername === "admin123" && (
                     <div className='delete' onClick={handleDeletePost}></div>

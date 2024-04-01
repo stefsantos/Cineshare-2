@@ -328,7 +328,28 @@ const getMovieId = async (req, res) => {
     }
 };
 
+const flagPost = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if (!post) 
+        {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (!post.isFlagged) 
+        {
+            await Post.findOneAndUpdate({ _id: postId }, { isFlagged: true });
+        }
+
+        res.status(200).json({ message: "Post flagged successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 
 export { uploadPostImage, createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
     getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost, 
-    getLikeCount, getLikeStatus, getMovieId};
+    getLikeCount, getLikeStatus, getMovieId, flagPost};
