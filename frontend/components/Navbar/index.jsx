@@ -87,10 +87,12 @@ const Navbar = () => {
                         <FaList style={{ marginRight: '8px' }} />
                         Watchlist
                     </NavLink>
-                    <NavLink to="/admin_page">
-                        <RiAdminFill style={{ marginRight: '8px' }} />
-                        Admin Page
-                    </NavLink>
+                    {activeusername === 'admin123' && (
+                        <NavLink to="/admin_page">
+                            <RiAdminFill style={{ marginRight: '8px' }} />
+                            Admin Page
+                        </NavLink>
+                    )}
                     <br></br>
                     <button onClick={handlePostClick} style={{ backgroundColor: "#A949F5", border: 'none', cursor: 'pointer', padding: '10px' }}>
                         <FaPencilAlt style={{ marginRight: '8px' }} />
