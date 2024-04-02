@@ -349,7 +349,25 @@ const flagPost = async (req, res) => {
     }
 };
 
+const getComments = async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        const post = await Post.findById(postId);
+
+        if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+        }
+
+        // If the post is found, send back the 'replies' array
+        res.status(200).json({ comments: post.replies });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+
 
 export { uploadPostImage, createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
     getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost, 
-    getLikeCount, getLikeStatus, getMovieId, flagPost};
+    getLikeCount, getLikeStatus, getMovieId, flagPost, getComments};

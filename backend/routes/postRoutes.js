@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { uploadPostImage, createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts, getUserPosts, updatePost, getLikeCount, getLikeStatus, getMovieId, flagPost} from '../controllers/postcontroller.js';
+import { uploadPostImage, createPost, getPost, deletePost, likeUnlikePost, replyToPost, getAllFeedPosts, getFriendFeedPosts, getUserPosts, updatePost, getLikeCount, getLikeStatus, getMovieId, flagPost, getComments} from '../controllers/postcontroller.js';
 import protectRoute from '../middleware/protectRoute.js';
 
 const router = express.Router();
@@ -37,6 +37,7 @@ router.get('/likes/count/:id', protectRoute, getLikeCount);
 router.get('/likes/status/:id', protectRoute, getLikeStatus);
 router.get('/movie/:movieId', protectRoute, getMovieId);
 router.post('/flag/:id', protectRoute, flagPost);
+router.get('/posts/:postId/comments', protectRoute, getComments);
 
 router.put('/:id', protectRoute, updatePost);
 
