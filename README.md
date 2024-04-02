@@ -28,9 +28,9 @@ To run the application:
 5. Execute the "npm run dev" command in both terminals to run.
 6. Navigate to "http:localhost:3000" to access the website
 
-DEVELOPED BY:
+# DEVELOPED BY:
 
-Del Rosario, Javier Vicente Miguel L.
+Del Rosario, Javier Vicente Miguel L.	
 Gan, Austin Philippe V.
 Santos, Stefano Nicholas E.
 Suarez, Philipp Matthew B.
