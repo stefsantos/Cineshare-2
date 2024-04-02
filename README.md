@@ -18,7 +18,7 @@ To access the MongoDB Atlas Database:
 3. In VS Code, open the Command Palette. (Click on "View" and open "Command Palette". Search "MongoDB: Connect" on the Command Palette and click on "Connect with Connection String.")
 4. Connect to the MongoDB deployment. (Paste your connection string with the password of the user who is the owner of the cluster into the Command Palette.)
 
-To run:
+To run the application:
 1. Clone the repository in Visual Studio Code.
 2. Download Vite (usually I npm install)
 3. Navigate to the directory wherein you cloned the repository.
