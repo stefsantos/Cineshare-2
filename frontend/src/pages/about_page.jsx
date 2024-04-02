@@ -4,10 +4,10 @@ import './about_page.css';
 function AboutPage() {
 
     const packages = [
-        { type: 'Package', name: 'Nodemon' },
-        { type: 'Package', name: 'Npm' },
-        { type: 'Package', name: 'Vite' },
-        { type: 'Third-party Library', name: 'Multer' },
+        { type: 'NPM Package', name: 'Nodemon' },
+        { type: 'NPM Package', name: 'Npm' },
+        { type: 'NPM Package', name: 'Vite' },
+        { type: 'NPM Package', name: 'Multer' },
         { type: 'Third-Party Library', name: 'React-Router-Dom' },
         { type: 'Third-Party Library', name: 'React-Icons' },
         { type: 'Third-Party Library', name: 'Express' },
