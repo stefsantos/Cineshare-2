@@ -99,7 +99,7 @@ function Watchlist() {
             <h1>Watchlist</h1>
             {message && <p className="message">{message}</p>} {/* Display the message here */}
             <div className="movie-cards-container">
-                {movieList.map(movie => (
+                {(movieList && movieList.length) > 0 ? (movieList.map(movie => (
                     <div key={movie.id} className="movie-card">
                         <button className="close-button" onClick={() => removeMovie(movie.id)}>X</button>
                         <Link to={`/movie/${movie.id}`}>
@@ -110,7 +110,9 @@ function Watchlist() {
                             <p>Rating: {movie.vote_average}/10</p>
                         </div>
                     </div>
-                ))}
+                ))) : (
+                    <p>No movie has been added to watchlist.</p>
+                )}
             </div>
         </div>
     </center>
