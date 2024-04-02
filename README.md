@@ -1,9 +1,12 @@
 This is the code for CCAPDEV MCO. It uses react + vite and gets data from the tmdb api as of now
 
 To run:
-1. clone the repo
-2. Download vite (usually I npm install)
-3. npm run dev in terminal to launch 
+1. Clone the repository in Visual Studio Code.
+2. Download Vite (usually I npm install)
+3. Navigate to the directory wherein you cloned the repository.
+4. Create a split-terminal of 2 terminals and navigate to "backend" directory in one and "frontend" directory in the other
+5. Execute the "npm run dev" command in both terminals to run.
+6. Navigate to "http:localhost:3000" to access the website
 
 
 # React + Vite
