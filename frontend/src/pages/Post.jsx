@@ -172,7 +172,7 @@ function Post({ post }) {
                 {post.user !== activeusername && (
                     <div className='report' onClick={handleFlagPost}></div>
                 )}
-                {post.user === activeusername || activeusername === "admin123" && (
+                {(post.user === activeusername || activeusername === "admin123") && (
                     <div className='delete' onClick={handleDeletePost}></div>
                 )}
             </div>

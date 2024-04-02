@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { Nav, NavLink, Bars, NavMenu, LogoutContainer } from "./NavBarElements";
 import { FaHome, FaUserFriends, FaList, FaPencilAlt } from "react-icons/fa";
+import { IoIosInformationCircle } from "react-icons/io";
 import { RiAdminFill } from "react-icons/ri";
 import { BiSolidCameraMovie } from "react-icons/bi";
 import PostTab from '../../src/pages/PostTab';
@@ -86,6 +87,10 @@ const Navbar = () => {
                     <NavLink to="/watchlist_page">
                         <FaList style={{ marginRight: '8px' }} />
                         Watchlist
+                    </NavLink>
+                    <NavLink to="/about_page">
+                        <IoIosInformationCircle style={{ marginRight: '8px' }} />
+                        About
                     </NavLink>
                     {activeusername === 'admin123' && (
                         <NavLink to="/admin_page">
