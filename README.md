@@ -6,6 +6,8 @@ Cineshare is a user-driven social media platform that allows it's users to inter
 
 Personalized Profiles: Each user on Cineshare has a personalized profile where they can showcase their favorite movies and posts. Users can customize their profiles to reflect their  personalities, allowing them to connect with others who share similar interests.
 
+Following and Followers: Users can follow other users to see updates on their feed, fostering connections based on shared movie interests.
+
 Movie Reviews: Cineshare provides a platform for users to write detailed reviews on movies they've watched. Users are able to share their insights, opinions, and critiques to help others discover hidden gems or avoid disappointing films.
 
 Watchlist: Users can create their own watchlist, allowing them to keep track of a list of movies they would like to watch.
