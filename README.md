@@ -18,21 +18,24 @@ To access the MongoDB Atlas Database:
 1. Contact the administrator of the database to whitelist the IP address of the system being used to access the database.
 2. Install MongoDB for Visual Studio Code. (In VS Code, open "Extensions" in the left navigation and search for "MongoDB for VS Code." Select the extension and click install.)
 3. In VS Code, open the Command Palette. (Click on "View" and open "Command Palette". Search "MongoDB: Connect" on the Command Palette and click on "Connect with Connection String.")
-4. Connect to the MongoDB deployment. (Paste your connection string with the password of the user who is the owner of the cluster into the Command Palette.)
+4. Connect to the MongoDB deployment. (Paste your connection string with the password of the user who is the owner of the cluster into the Cfommand Palette.)
 
 To run the application:
 1. Clone the repository in Visual Studio Code.
-2. Download Vite (usually I npm install)
+2. Download Vite (Can be done using "npm install").
 3. Navigate to the directory wherein you cloned the repository.
-4. Create a split-terminal of 2 terminals and navigate to "backend" directory in one and "frontend" directory in the other
+4. Create a split-terminal of 2 terminals and navigate to "backend" directory in one and "frontend" directory in the other.
 5. Execute the "npm run dev" command in both terminals to run.
-6. Navigate to "http:localhost:3000" to access the website
+6. Navigate to "http:localhost:3000" to access the website.
 
-# DEVELOPED BY:
+# Developed By:
 
-Del Rosario, Javier Vicente Miguel L.	
-Gan, Austin Philippe V.
 Santos, Stefano Nicholas E.
+
+Del Rosario, Javier Vicente Miguel L.
+
+Gan, Austin Philippe V.
+
 Suarez, Philipp Matthew B.
 
 # React + Vite
