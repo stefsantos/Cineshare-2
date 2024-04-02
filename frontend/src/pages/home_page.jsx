@@ -47,6 +47,7 @@ function HomePage() {
             }
             const data = await response.json();
             setPosts(data.feedPosts); // Adjust this based on your API response structure
+            console.log(data);
         } catch (error) {
             console.error("Error fetching friend posts:", error);
             setError("Error fetching friend posts. Please try again later.");
@@ -83,7 +84,7 @@ function HomePage() {
                     All Feed
                 </button>
                 <button onClick={() => setCurrentFilter('friends')} className={currentFilter === 'friends' ? 'active' : ''}>
-                    Friends Feed
+                    Following Feed
                 </button>
             </div>
             <div className='homepage'>
@@ -93,18 +94,26 @@ function HomePage() {
                             {loading ? (
                                 <p>Loading posts...</p>
                             ) : (
-                                posts.map((post, index) => (
-                                    <Post key={index} post={{
-                                        _id: post._id,
-                                        user: post.postedBy ? post.postedBy.username : 'deleteduser',
-                                        movieId: post.movieId,
-                                        movie: post.movie,
-                                        content: post.content,
-                                        imageUrl: post.imageUrl,
-                                        timestamp: new Date(post.createdAt).toLocaleDateString(),
-                                        isFlagged: post.isFlagged
-                                    }} />
-                                ))
+                                (currentFilter !== 'all' && posts.length <= 0) ? (
+                                    <p>Following have not posted.</p>
+                                ) : (
+                                    posts && posts.length > 0 ? (
+                                        posts.map((post, index) => (
+                                            <Post key={index} post={{
+                                                _id: post._id,
+                                                user: post.postedBy ? post.postedBy.username : 'deleteduser',
+                                                movieId: post.movieId,
+                                                movie: post.movie,
+                                                content: post.content,
+                                                imageUrl: post.imageUrl,
+                                                timestamp: new Date(post.createdAt).toLocaleDateString(),
+                                                isFlagged: post.isFlagged
+                                            }} />
+                                        ))
+                                    ) : (
+                                        <p>No posts to display.</p>
+                                    )
+                                )
                             )}
                         </div>
                         <div className='rightsidebar'>
