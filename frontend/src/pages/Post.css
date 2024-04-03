@@ -63,7 +63,7 @@
 .heart, .comment, .delete, .report {
     margin-top: 10px;
     margin-bottom: 10px;
-    background-image: url('sprites2.png'); 
+    background-image: url('../../sprites2.png'); 
     cursor: pointer;
     width: 24px; 
     height: 24px; 
