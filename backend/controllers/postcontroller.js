@@ -360,7 +360,7 @@ const flagPost = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        const postId = req.params.postId; 
+        const postId = req.params.id; 
         console.log(`Fetching comments for postId: ${postId}`); 
         const post = await Post.findById(postId);
 

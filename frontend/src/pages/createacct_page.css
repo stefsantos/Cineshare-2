@@ -1,127 +1,126 @@
 
 .create-account-fullscreen {
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-color: #1d1d1d;
-  }
-  
-  
-  .create-account-side-bar {
-    width: 40%;
-    background-color: #101e33; 
-    height: 100%; 
-    color: #ffffff; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .create-account-side-bar img {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 20px;
-    animation: floatLogo 4s infinite ease-in-out;
-  }
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: #1d1d1d;
+}
 
-  
-  @keyframes floatLogo {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-  }
 
-  .create-account-container {
-    width: 60%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
+.create-account-side-bar {
+  width: 40%;
+  background-color: #101e33; 
+  height: 100%; 
+  color: #ffffff; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .signup-container {
-    background-color: #222831;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    color: #eeeeee;
-  }
-  
+.create-account-side-bar img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 20px;
+  animation: floatLogo 4s infinite ease-in-out;
+}
 
-  .signup-container h2 {
-    margin-bottom: 20px;
-  }
-  
-  .signup-form .input-group {
-    margin-bottom: 20px;
-  }
-  
-  .signup-form .input-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .signup-form .input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #393e46;
-    background-color: #393e46;
-    border-radius: 4px;
-    color: #eeeeee;
-  }
-  
-  
-  .signup-button {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    background-color: #101e33; 
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .signup-button:hover {
-    background-color: #007c7a;
-  }
-  
 
-  .signin-link {
-    text-align: center;
-    margin-top: 20px;
+@keyframes floatLogo {
+  0%, 100% {
+      transform: translateY(0);
   }
-  
-  .text-button {
-    background: none;
-    border: none;
-    color: #00adb5;
-    cursor: pointer;
+  50% {
+      transform: translateY(-10px);
   }
-  
-  .text-button:hover {
-    text-decoration: underline;
-  }
-  
-  .input-group label {
-    display: block;
-    font-weight: bold;
-    text-align: left;
-    margin-top: 0px;
-    margin-bottom: 0px;
+}
 
-  }
-  
-  .input-group input {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-  }
-  
+.create-account-container {
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.signup-container {
+  background-color: #222831;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: #eeeeee;
+}
+
+
+.signup-container h2 {
+  margin-bottom: 20px;
+}
+
+.signup-form .input-group {
+  margin-bottom: 20px;
+}
+
+.signup-form .input-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.signup-form .input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #393e46;
+  background-color: #393e46;
+  border-radius: 4px;
+  color: #eeeeee;
+}
+
+
+.signup-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #101e33; 
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.signup-button:hover {
+  background-color: #007c7a;
+}
+
+
+.signin-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #00adb5;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  text-decoration: underline;
+}
+
+.input-group label {
+  display: block;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+}
+
+.input-group input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}

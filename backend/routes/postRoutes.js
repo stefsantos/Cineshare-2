@@ -37,7 +37,7 @@ router.get('/likes/count/:id', protectRoute, getLikeCount);
 router.get('/likes/status/:id', protectRoute, getLikeStatus);
 router.get('/movie/:movieId', protectRoute, getMovieId);
 router.post('/flag/:id', protectRoute, flagPost);
-router.get('/posts/:postId/comments', protectRoute, getComments);
+router.get('/comments/:id', protectRoute, getComments);
 
 router.put('/:id', protectRoute, updatePost);
 

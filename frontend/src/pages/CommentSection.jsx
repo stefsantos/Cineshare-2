@@ -49,14 +49,13 @@ const CommentSection = ({ post }) => {
     const fetchComments = async () => {
       try {
         console.log(`Fetching comments for post ID: ${post._id}`);
-        const response = await fetch(`/api/posts/${post._id}/comments`, {
+        const response = await fetch(`/api/posts/comments/${post._id}`, {
           method: 'GET',
           headers: {
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${localStorage.getItem('token')}`, 
+            'Content-Type': 'application/json'
           },
         });
-
+        console.log(response);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
@@ -91,7 +90,7 @@ const CommentSection = ({ post }) => {
         comments.map((comment) => (
           comment && comment.text ? (
             <div key={comment._id} className="comment-item">
-              <span className="comment-text">{comment.text}</span>
+              <span className="comment-text"><span className="comment-username">{comment.username}</span>: {comment.text}</span>
               <button onClick={() => removeComment(comment._id)} className="delete-comment">&#x1F5D1;</button>
             </div>
           ) : null
