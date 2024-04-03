@@ -10,6 +10,8 @@ function Post({ post }) {
     const [isHeartActive, setIsHeartActive] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [likeCount, setLikeCount] = useState(post.likes?.length ?? 0);
+    const [editMode, setEditMode] = useState(false);
+    const [editedContent, setEditedContent] = useState(post.content);
     
     useEffect(() => {
         setIsHeartActive(post.likes?.includes(activeusername));
@@ -112,7 +114,7 @@ function Post({ post }) {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     const handleFlagPost = async (e) => {
         try {
@@ -140,11 +142,44 @@ function Post({ post }) {
 
     const handleReloadClick = () => {
         setTimeout(() => {
-          window.location.reload();
+        window.location.reload();
         }, 10); 
-      };
+    };
+
+    const toggleEditMode = () => {
+        setEditMode(!editMode);
+
+        if (editMode) {
+            setEditedContent(post.content);
+        }
+    };
+
+    const handleEditPost = async (e) => {
+        e.preventDefault();
+
+        try {
+
+            const res = await fetch(`api/posts/${post._id}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ content: post.content }),
+            });
+            const data = await res.json();
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to edit post');
+            }
+
+            console.log('Post edited successfully', data);
+            post.content = edited.Content;
+            setEditMode(false);
+        } catch (error) {
+            console.error('Error editing post:', error);
+        }
+    }
     
-      return (
+    return (
         <div className = "post">
             <h4>
                 {post.user === activeusername ? (
@@ -162,13 +197,31 @@ function Post({ post }) {
                 </Link>
             </h4>
 
-            <p>{post.content}</p>
+            {!editMode ? (
+                <p>{post.content}</p>
+                ) : (
+                <form onSubmit={handleEditPost}>
+                    <textarea
+                        value={editedContent}
+                        onChange={(e) => setEditedContent(e.target.value)}
+                    ></textarea>
+                    <button type="submit">Save</button>
+                    <button type="button" onClick={toggleEditMode}>Cancel</button>
+                </form>
+            )}
+
             {post.imageUrl && (
                 <img src={`http://localhost:4000/${post.imageUrl}`} alt="Post visual" className="post-image" />
             )}
+
             <div className='postactions'>
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
                 <div className='comment' onClick={toggleCommentsVisibility}></div>
+                {post.user === activeusername && (
+                    <div className='edit' onClick={toggleEditMode}>
+                        {editMode ? 'Cancel' : 'Edit'}
+                    </div>
+                )}
                 {post.user !== activeusername && (
                     <div className='report' onClick={handleFlagPost}></div>
                 )}

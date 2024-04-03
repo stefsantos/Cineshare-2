@@ -72,7 +72,6 @@
     display: inline-block;
 }
 
-
 .heart {
     background-position: -25px -318px; 
     margin-right: 5px;
@@ -99,7 +98,7 @@
     height: 20px;
 }
 
-.heart:hover, .comment:hover, .delete:hover {
+.heart:hover, .comment:hover, .delete:hover, .edit:hover {
     opacity: 0.7;
 }
 
