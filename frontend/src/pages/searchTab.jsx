@@ -65,7 +65,7 @@ const searchTab = ({ isVisible, onClose }) => {
                 {showSearchResult && (
                     <div className="search-container">
                         <img
-                           src={searchUsername.profilepic ? `http://localhost:4000/${searchUsername.profilepic}` : `images/defaultAvatar.jpg`}
+                           src={searchUsername.profilepic ? `https://cineshare-51j1.onrender.com/${searchUsername.profilepic}` : `images/defaultAvatar.jpg`}
                             alt="Avatar"
                             className="search_avatar"
                         />

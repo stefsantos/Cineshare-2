@@ -18,7 +18,7 @@ var _default = (0, _vite.defineConfig)({
     port: 3000,
     proxy: {
       "/api": {
-        target: "http://localhost:4000",
+        target: "https://cineshare-51j1.onrender.com",
         changeOrigin: true,
         secure: false
       }

@@ -211,7 +211,7 @@ function Post({ post }) {
             )}
 
             {post.imageUrl && (
-                <img src={`http://localhost:4000/${post.imageUrl}`} alt="Post visual" className="post-image" />
+                <img src={`https://cineshare-51j1.onrender.com/${post.imageUrl}`} alt="Post visual" className="post-image" />
             )}
 
             <div className='postactions'>
