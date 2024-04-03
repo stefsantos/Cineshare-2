@@ -104,3 +104,23 @@
     opacity: 0.7;
 }
 
+.save-button,
+.cancel-button {
+  padding: 8px 16px; 
+  font-size: 16px; 
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 25%;
+  gap: 20px;
+}
+
+.cancel-button {
+    margin-left: 10px;
+}
+
+.edit-post {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
