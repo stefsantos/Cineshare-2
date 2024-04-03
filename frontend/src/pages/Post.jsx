@@ -201,14 +201,16 @@ function Post({ post }) {
             {!editMode ? (
                 <p>{post.content}</p>
                 ) : (
-                <form onSubmit={handleEditPost}>
-                    <textarea
-                        value={editedContent}
-                        onChange={(e) => setEditedContent(e.target.value)}
-                    ></textarea>
-                    <button type="submit">Save</button>
-                    <button type="button" onClick={toggleEditMode}>Cancel</button>
-                </form>
+                <div className="edit-post">
+                    <form onSubmit={handleEditPost}>
+                        <textarea
+                            value={editedContent}
+                            onChange={(e) => setEditedContent(e.target.value)}
+                        ></textarea>
+                        <button type="submit" class="save-button">Save</button>
+                        <button type="button" class="cancel-button" onClick={toggleEditMode}>Cancel</button>
+                    </form>
+                </div>
             )}
 
             {post.imageUrl && (
