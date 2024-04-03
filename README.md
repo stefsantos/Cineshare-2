@@ -28,6 +28,7 @@ To run the application:
 5. Execute the "npm run dev" command in both terminals to run.
 6. Navigate to "http:localhost:3000" to access the website.
 Note: If the backend is deployed, simply run npm run dev on the frontend directory to run the application rather than running both.
+Note2: replace all https://cineshare-51j1.onrender.com/ with http://localhost:4000/ if you want to run everything locally
 
 # Developed By:
 
