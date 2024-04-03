@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getComments = exports.flagPost = exports.getMovieId = exports.getLikeStatus = exports.getLikeCount = exports.updatePost = exports.getUserPosts = exports.getFriendFeedPosts = exports.getAllFeedPosts = exports.replyToPost = exports.likeUnlikePost = exports.deletePost = exports.getPost = exports.createPost = exports.uploadPostImage = void 0;
+exports.deleteComment = exports.getComments = exports.flagPost = exports.getMovieId = exports.getLikeStatus = exports.getLikeCount = exports.updatePost = exports.getUserPosts = exports.getFriendFeedPosts = exports.getAllFeedPosts = exports.replyToPost = exports.likeUnlikePost = exports.deletePost = exports.getPost = exports.createPost = exports.uploadPostImage = void 0;
 
 var _userModel = _interopRequireDefault(require("../models/userModel.js"));
 
@@ -938,15 +938,16 @@ var getComments = function getComments(req, res) {
       switch (_context15.prev = _context15.next) {
         case 0:
           _context15.prev = 0;
-          postId = req.params.postId;
-          _context15.next = 4;
+          postId = req.params.id;
+          console.log("Fetching comments for postId: ".concat(postId));
+          _context15.next = 5;
           return regeneratorRuntime.awrap(_postModel["default"].findById(postId));
 
-        case 4:
+        case 5:
           post = _context15.sent;
 
           if (post) {
-            _context15.next = 7;
+            _context15.next = 8;
             break;
           }
 
@@ -954,28 +955,92 @@ var getComments = function getComments(req, res) {
             message: "Post not found"
           }));
 
-        case 7:
-          // If the post is found, send back the 'replies' array
+        case 8:
+          console.log(post.replies);
           res.status(200).json({
             comments: post.replies
           });
-          _context15.next = 14;
+          _context15.next = 16;
           break;
 
-        case 10:
-          _context15.prev = 10;
+        case 12:
+          _context15.prev = 12;
           _context15.t0 = _context15["catch"](0);
           console.error(_context15.t0);
           res.status(500).json({
             message: "Server error"
           });
 
-        case 14:
+        case 16:
         case "end":
           return _context15.stop();
       }
     }
-  }, null, null, [[0, 10]]);
+  }, null, null, [[0, 12]]);
 };
 
 exports.getComments = getComments;
+
+var deleteComment = function deleteComment(req, res) {
+  var commentId, adminId, post;
+  return regeneratorRuntime.async(function deleteComment$(_context16) {
+    while (1) {
+      switch (_context16.prev = _context16.next) {
+        case 0:
+          commentId = req.params.commentId;
+          adminId = "660968f9677e962852eee30b";
+          _context16.prev = 2;
+          _context16.next = 5;
+          return regeneratorRuntime.awrap(_postModel["default"].findOne({
+            "replies._id": commentId
+          }));
+
+        case 5:
+          post = _context16.sent;
+
+          if (post) {
+            _context16.next = 8;
+            break;
+          }
+
+          return _context16.abrupt("return", res.status(404).json({
+            message: "Post not found with comment: ".concat(commentId)
+          }));
+
+        case 8:
+          _context16.next = 10;
+          return regeneratorRuntime.awrap(_postModel["default"].findOneAndUpdate({
+            _id: post._id
+          }, {
+            $pull: {
+              replies: {
+                _id: commentId
+              }
+            }
+          }));
+
+        case 10:
+          res.status(200).json({
+            message: "Comment deleted successfully"
+          });
+          _context16.next = 17;
+          break;
+
+        case 13:
+          _context16.prev = 13;
+          _context16.t0 = _context16["catch"](2);
+          console.error("Error deleting comment:", _context16.t0);
+          res.status(500).json({
+            message: "Server error",
+            error: _context16.t0.message
+          });
+
+        case 17:
+        case "end":
+          return _context16.stop();
+      }
+    }
+  }, null, null, [[2, 13]]);
+};
+
+exports.deleteComment = deleteComment;
