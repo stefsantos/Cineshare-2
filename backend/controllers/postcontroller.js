@@ -112,37 +112,7 @@ const deletePost = async (req, res) => {
 
 }
 
-const likeUnlikePost = async (req, res) => {
 
-    try {
-
-        const {id: postId} = req.params;
-        const userId = req.user._id;
-
-        const post = await Post.findById(postId);
-
-        if (!post) {
-            return res.status(404).json({ message: "post not found" });
-        }
-
-        const userLikedPost = post.likes.includes(userId);
-
-        if (userLikedPost) {
-            await Post.updateOne({ _id: postId }, { $pull: { likes: userId } })
-            res.status(200).json({ message: "post unliked" });
-        } else {
-            post.likes.push(userId);
-            await post.save();
-            res.status(200).json({ message: "post liked" });
-        }
-
-    } catch (error) {
-
-        res.status(500).json({ message: error.message });
-
-    }
-
-}
 
 const replyToPost = async (req, res) => {
     try {
@@ -293,35 +263,7 @@ const updatePost = async (req, res) => {
   };
   
 
-const getLikeCount = async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: "Post not found" });
-        }
-        res.status(200).json({ likeCount: post.likes.length });
-    } catch (error) {
-        console.error('Error fetching like count:', error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
-};
 
-const getLikeStatus = async (req, res) => {
-    try {
-        const postId = req.params.id;
-        const userId = req.user._id;
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: "Post not found" });
-        }
-        const isLiked = post.likes.includes(userId);
-        res.status(200).json({ isLiked });
-    } catch (error) {
-        console.error('Error fetching like status:', error);
-        res.status(500).json({ message: "Server error", error: error.message });
-    }
-};
 
 const getMovieId = async (req, res) => {
     try {
@@ -399,6 +341,125 @@ const deleteComment = async (req, res) => {
     }
 };
 
+const likeUnlikePost = async (req, res) => {
+
+    try {
+
+        const {id: postId} = req.params;
+        const userId = req.user._id;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "post not found" });
+        }
+
+        const userLikedPost = post.likes.includes(userId);
+
+        if (userLikedPost) {
+            await Post.updateOne({ _id: postId }, { $pull: { likes: userId } })
+            res.status(200).json({ message: "post unliked" });
+        } else {
+            post.likes.push(userId);
+            await post.save();
+            res.status(200).json({ message: "post liked" });
+        }
+
+    } catch (error) {
+
+        res.status(500).json({ message: error.message });
+
+    }
+
+};
+
+const getLikeCount = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        res.status(200).json({ likeCount: post.likes.length });
+    } catch (error) {
+        console.error('Error fetching like count:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+const getLikeStatus = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        const isLiked = post.likes.includes(userId);
+        res.status(200).json({ isLiked });
+    } catch (error) {
+        console.error('Error fetching like status:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+const dislikePost = async (req, res) => {
+    try {
+        const { id: postId } = req.params;
+        const userId = req.user._id;
+
+        const post = await Post.findById(postId);
+
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        const userDislikedPost = post.dislikes.includes(userId);
+
+        if (userDislikedPost) {
+            await Post.updateOne({ _id: postId }, { $pull: { dislikes: userId } });
+            return res.status(200).json({ message: "Dislike removed" });
+        } else {
+            post.dislikes.push(userId);
+            res.status(200).json({ message: "Post disliked" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getDislikeCount = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        res.status(200).json({ dislikeCount: post.dislikes.length });
+    } catch (error) {
+        console.error('Error fetching dislike count:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+const getDislikeStatus = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const userId = req.user._id;
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+        const isDisliked = post.dislikes.includes(userId);
+        res.status(200).json({ isDisliked });
+    } catch (error) {
+        console.error('Error fetching dislike status:', error);
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+
 export { uploadPostImage, createPost, getPost, deletePost, likeUnlikePost, replyToPost, 
     getAllFeedPosts, getFriendFeedPosts, getUserPosts , updatePost, 
-    getLikeCount, getLikeStatus, getMovieId, flagPost, getComments, deleteComment};
+    getLikeCount, getLikeStatus, getMovieId, flagPost, 
+    getComments, deleteComment, dislikePost, getDislikeCount, getDislikeStatus};

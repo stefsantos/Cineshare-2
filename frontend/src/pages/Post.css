@@ -60,7 +60,7 @@
     font-size: 12px;
 }
 
-.heart, .comment, .delete, .report {
+.heart, .dislike, .comment, .delete, .report {
     margin-top: 10px;
     margin-bottom: 10px;
     background-image: url('../../sprites2.png'); 
@@ -72,7 +72,15 @@
     display: inline-block;
 }
 
+.dislike {
+    background-position: -25px -318px; 
+    margin-right: 5px;
+    transform: rotate(180deg);
+}
 
+.dislike-active {
+    background-position: 0 -318px;
+}
 
 .heart {
     background-position: -25px -318px; 
@@ -100,27 +108,7 @@
     height: 20px;
 }
 
-.heart:hover, .comment:hover, .delete:hover, .edit:hover {
+.heart:hover, .comment:hover, .delete:hover, .edit:hover, .dislike:hover {
     opacity: 0.7;
 }
 
-.save-button,
-.cancel-button {
-  padding: 8px 16px; 
-  font-size: 16px; 
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-left: 25%;
-  gap: 20px;
-}
-
-.cancel-button {
-    margin-left: 10px;
-}
-
-.edit-post {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
