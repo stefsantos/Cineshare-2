@@ -27,6 +27,7 @@ To run the application:
 4. Create a split-terminal of 2 terminals and navigate to "backend" directory in one and "frontend" directory in the other.
 5. Execute the "npm run dev" command in both terminals to run.
 6. Navigate to "http:localhost:3000" to access the website.
+Note: If the backend is deployed, simply run npm run dev on the frontend directory to run the application rather than running both.
 
 # Developed By:
 
