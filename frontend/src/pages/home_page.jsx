@@ -67,7 +67,7 @@ function HomePage() {
 
     const fetchTrendingMovies = async () => {
         try {
-            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=YOUR_API_KEY`);
+            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
