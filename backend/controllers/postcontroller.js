@@ -360,14 +360,15 @@ const flagPost = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        const postId = req.params.postId;
+        const postId = req.params.postId; 
+        console.log(`Fetching comments for postId: ${postId}`); 
         const post = await Post.findById(postId);
 
         if (!post) {
-        return res.status(404).json({ message: "Post not found" });
+            return res.status(404).json({ message: "Post not found" });
         }
 
-        // If the post is found, send back the 'replies' array
+        console.log(post.replies); 
         res.status(200).json({ comments: post.replies });
     } catch (error) {
         console.error(error);

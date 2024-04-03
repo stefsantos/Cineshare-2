@@ -15,27 +15,6 @@ const CommentSection = ({ post }) => {
     setComments(comments.filter(comment => comment.id !== commentId));
   };
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(`/api/posts/${post._id}/comments`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-  
-        const data = await response.json();
-        setComments(data.comments); 
-      } catch (error) {
-        setError(error.message);
-      }
-    };
-  
-    fetchComments();
-  }, [post._id]);
 
 
   const handleCommentSubmit = async (e) => {
@@ -65,6 +44,34 @@ const CommentSection = ({ post }) => {
     }
   };
   
+  // In CommentSection component
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        console.log(`Fetching comments for post ID: ${post._id}`);
+        const response = await fetch(`/api/posts/${post._id}/comments`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${localStorage.getItem('token')}`, 
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setComments(data.comments); 
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        setError(error.message);
+      }
+    };
+
+    fetchComments();
+  }, [post._id]); 
 
 
 
@@ -80,18 +87,18 @@ const CommentSection = ({ post }) => {
         <button type="submit">Submit</button>
       </form>
       <div className="comments-list">
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            comment && comment.text ? (
-              <div key={comment.id} className="comment-item">
-                <span className="comment-text">{comment.text}</span>
-                <button onClick={() => removeComment(comment.id)} className="delete-comment">&#x1F5D1;</button>
-              </div>
-            ) : null
-          ))
-        ) : (
-          <p>No comments yet.</p>
-        )}
+      {comments.length > 0 ? (
+        comments.map((comment) => (
+          comment && comment.text ? (
+            <div key={comment._id} className="comment-item">
+              <span className="comment-text">{comment.text}</span>
+              <button onClick={() => removeComment(comment._id)} className="delete-comment">&#x1F5D1;</button>
+            </div>
+          ) : null
+        ))
+      ) : (
+        <p>No comments yet.</p>
+      )}
       </div>
     </div>
   );
