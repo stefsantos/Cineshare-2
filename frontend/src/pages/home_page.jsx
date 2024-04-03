@@ -86,14 +86,22 @@ function HomePage() {
     };
 
     const loadMorePosts = () => {
+        // Save current scroll position
+        const currentScrollPosition = window.scrollY;
+    
         const nextPage = currentPage + 1;
         setCurrentPage(nextPage);
-        if (currentFilter === 'all') {
-            fetchAllPosts(nextPage);
-        } else {
-            fetchFriendPosts(nextPage);
-        }
+    
+        const fetchPosts = currentFilter === 'all' ? fetchAllPosts : fetchFriendPosts;
+        fetchPosts(nextPage).then(() => {
+            // Wait for the DOM to update
+            setTimeout(() => {
+                // Restore the scroll position
+                window.scrollTo(0, currentScrollPosition);
+            }, 100); // Adjust delay as needed
+        });
     };
+    
 
     if (error) {
         return <div>Error: {error}</div>;
