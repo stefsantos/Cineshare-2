@@ -13,34 +13,32 @@ function HomePage() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Reset pagination and posts when changing filter
-        setPosts([]);
-        setCurrentPage(1);
-        setHasMore(true);
-
-        if (currentFilter === 'all') {
-            fetchAllPosts();
-        } else {
-            fetchFriendPosts();
-        }
+        // Invoked when `currentFilter` changes.
+        handleFetchPosts();
         fetchTrendingMovies();
-    }, [currentFilter]); // Re-fetch posts when the currentFilter changes
+    }, [currentFilter]);
 
-    const fetchAllPosts = async (page = currentPage) => {
+    useEffect(() => {
+        // Invoked when `currentPage` changes, except for the initial render.
+        handleFetchPosts();
+    }, [currentPage]);
+
+    const handleFetchPosts = async () => {
+        // Determine which fetch function to use based on the current filter.
+        const fetchFunction = currentFilter === 'all' ? fetchAllPosts : fetchFriendPosts;
+        fetchFunction();
+    };
+
+    const fetchAllPosts = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/posts/allfeed?page=${page}&limit=10`);
+            const response = await fetch(`/api/posts/allfeed?page=${currentPage}&limit=10`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            if (page > 1) {
-                setPosts(prev => [...prev, ...data.feedPosts]);
-            } else {
-                setPosts(data.feedPosts);
-            }
-            setHasMore(data.hasMore); // Adjust based on your API
-            console.log(data);
+            setPosts(data.feedPosts);
+            setHasMore(data.hasMore);
         } catch (error) {
             console.error("Error fetching posts:", error);
             setError("Error fetching posts. Please try again later.");
@@ -49,21 +47,16 @@ function HomePage() {
         }
     };
 
-    const fetchFriendPosts = async (page = currentPage) => {
+    const fetchFriendPosts = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`/api/posts/friendfeed?page=${page}&limit=10`);
+            const response = await fetch(`/api/posts/friendfeed?page=${currentPage}&limit=10`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            if (page > 1) {
-                setPosts(prev => [...prev, ...data.feedPosts]);
-            } else {
-                setPosts(data.feedPosts);
-            }
-            setHasMore(data.hasMore); // Adjust based on your API
-            console.log(data);
+            setPosts(data.feedPosts);
+            setHasMore(data.hasMore);
         } catch (error) {
             console.error("Error fetching friend posts:", error);
             setError("Error fetching friend posts. Please try again later.");
@@ -74,7 +67,7 @@ function HomePage() {
 
     const fetchTrendingMovies = async () => {
         try {
-            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=3c4682174e03411b1f2ea9d887d0b8f3`);
+            const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=YOUR_API_KEY`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -85,23 +78,15 @@ function HomePage() {
         }
     };
 
-    const loadMorePosts = () => {
-        // Save current scroll position
-        const currentScrollPosition = window.scrollY;
-    
-        const nextPage = currentPage + 1;
-        setCurrentPage(nextPage);
-    
-        const fetchPosts = currentFilter === 'all' ? fetchAllPosts : fetchFriendPosts;
-        fetchPosts(nextPage).then(() => {
-            // Wait for the DOM to update
-            setTimeout(() => {
-                // Restore the scroll position
-                window.scrollTo(0, currentScrollPosition);
-            }, 100); // Adjust delay as needed
-        });
+    const loadNextPage = () => {
+        setCurrentPage(currentPage => currentPage + 1);
     };
-    
+
+    const loadPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage => currentPage - 1);
+        }
+    };
 
     if (error) {
         return <div>Error: {error}</div>;
@@ -114,10 +99,10 @@ function HomePage() {
                 <h2>Home</h2>
             </div>
             <div className='filter-buttons'>
-                <button onClick={() => setCurrentFilter('all')} className={currentFilter === 'all' ? 'active' : ''}>
+                <button onClick={() => { setCurrentFilter('all'); setCurrentPage(1); }} className={currentFilter === 'all' ? 'active' : ''}>
                     All Feed
                 </button>
-                <button onClick={() => setCurrentFilter('friends')} className={currentFilter === 'friends' ? 'active' : ''}>
+                <button onClick={() => { setCurrentFilter('friends'); setCurrentPage(1); }} className={currentFilter === 'friends' ? 'active' : ''}>
                     Following Feed
                 </button>
             </div>
@@ -127,33 +112,25 @@ function HomePage() {
                         <div className='userposts'>
                             {loading ? (
                                 <p>Loading posts...</p>
+                            ) : posts && posts.length > 0 ? (
+                                posts.map((post, index) => (
+                                    <Post key={index} post={post} />
+                                ))
                             ) : (
-                                (currentFilter !== 'all' && posts.length <= 0) ? (
-                                    <p>You are not following anyone that has posted.</p>
-                                ) : (
-                                    posts && posts.length > 0 ? (
-                                        posts.map((post, index) => (
-                                            <Post key={index} post={{
-                                                _id: post._id,
-                                                user: post.postedBy ? post.postedBy.username : 'deleteduser',
-                                                movieId: post.movieId,
-                                                movie: post.movie,
-                                                content: post.content,
-                                                imageUrl: post.imageUrl,
-                                                timestamp: new Date(post.createdAt).toLocaleDateString(),
-                                                isFlagged: post.isFlagged
-                                            }} />
-                                        ))
-                                    ) : (
-                                        <p>No posts to display.</p>
-                                    )
-                                )
+                                <p>No posts to display.</p>
                             )}
-                            {hasMore && (
-                                <button onClick={loadMorePosts} className="load-more">
-                                    Load More
-                                </button>
-                            )}
+                            <div className="pagination-buttons">
+                                {currentPage > 1 && (
+                                    <button onClick={loadPreviousPage} className="page-control">
+                                        Previous Page
+                                    </button>
+                                )}
+                                {hasMore && (
+                                    <button onClick={loadNextPage} className="page-control">
+                                        Next Page
+                                    </button>
+                                )}
+                            </div>
                         </div>
                         <div className='rightsidebar'>
                             <div className='sidetitle'>🔥Popular Movies</div>
