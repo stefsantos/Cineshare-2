@@ -11,9 +11,27 @@ const CommentSection = ({ post }) => {
     setNewComment(e.target.value);
   };
 
-  const removeComment = (commentId) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-  };
+  const removeComment = async (commentId) => {
+    try {
+        const response = await fetch(`/api/comments/${commentId}`, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json',
+              "Authorization": `Bearer ${localStorage.getItem('token')}`,
+          },
+      });
+
+        if (!response.ok) {
+            const errorData = await response.json(); 
+            throw new Error(errorData.message || "An error occurred while deleting the comment.");
+        }
+
+        
+        setComments(currentComments => currentComments.filter(comment => comment._id !== commentId));
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+    }
+};
 
 
 
