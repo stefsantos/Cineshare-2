@@ -79,6 +79,10 @@ const EditProfileTab = ({ isVisible, onClose }) => {
       }
 
       onClose();
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 10); 
     } catch (error) {
       console.error('Error saving changes:', error.message);
     }

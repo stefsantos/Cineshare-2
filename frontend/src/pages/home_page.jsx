@@ -158,7 +158,7 @@ function HomePage() {
                                 )
                             )}
                             {hasMore && (
-                                <button onClick={loadMorePosts} className="load-more">
+                                <button onClick={loadMorePosts} className="load-more-home-button">
                                     Load More
                                 </button>
                             )}
