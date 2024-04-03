@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import './Post.css';
 import CommentSection from './CommentSection';
 import { useUser } from '../../src/UserContext';
+import { FaPencilAlt } from "react-icons/fa";
 
 function Post({ post }) {
     const { activeusername } = useUser();
@@ -156,28 +157,28 @@ function Post({ post }) {
 
     const handleEditPost = async (e) => {
         e.preventDefault();
-
+    
         try {
-
             const res = await fetch(`api/posts/${post._id}`, {
                 method: 'PUT',
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`, // If your endpoint requires authentication
                 },
-                body: JSON.stringify({ content: post.content }),
+                body: JSON.stringify({ content: editedContent }),
             });
-            const data = await res.json();
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to edit post');
+    
+            if (!res.ok) {
+                throw new Error('Failed to edit post');
             }
-
+            const data = await res.json();
+    
             console.log('Post edited successfully', data);
-            post.content = edited.Content;
             setEditMode(false);
         } catch (error) {
             console.error('Error editing post:', error);
         }
-    }
+    };
     
     return (
         <div className = "post">
@@ -219,7 +220,7 @@ function Post({ post }) {
                 <div className='comment' onClick={toggleCommentsVisibility}></div>
                 {post.user === activeusername && (
                     <div className='edit' onClick={toggleEditMode}>
-                        {editMode ? 'Cancel' : 'Edit'}
+                        <FaPencilAlt />
                     </div>
                 )}
                 {post.user !== activeusername && (
