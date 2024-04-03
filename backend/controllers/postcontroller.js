@@ -1,5 +1,5 @@
 import User from "../models/usermodel.js";
-import Post from "../models/postModel.js";
+import Post from "../models/postmodel.js";
 
 const uploadPostImage = async (req, res) => {
     try {
