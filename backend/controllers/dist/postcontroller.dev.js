@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getMovieId = exports.getLikeStatus = exports.getLikeCount = exports.updatePost = exports.getUserPosts = exports.getFriendFeedPosts = exports.getAllFeedPosts = exports.replyToPost = exports.likeUnlikePost = exports.deletePost = exports.getPost = exports.createPost = exports.uploadPostImage = void 0;
+exports.getComments = exports.flagPost = exports.getMovieId = exports.getLikeStatus = exports.getLikeCount = exports.updatePost = exports.getUserPosts = exports.getFriendFeedPosts = exports.getAllFeedPosts = exports.replyToPost = exports.likeUnlikePost = exports.deletePost = exports.getPost = exports.createPost = exports.uploadPostImage = void 0;
 
 var _userModel = _interopRequireDefault(require("../models/userModel.js"));
 
@@ -437,22 +437,34 @@ var replyToPost = function replyToPost(req, res) {
 exports.replyToPost = replyToPost;
 
 var getAllFeedPosts = function getAllFeedPosts(req, res) {
-  var feedPosts;
+  var page, limit, skipIndex, feedPosts, totalPosts, hasMore;
   return regeneratorRuntime.async(function getAllFeedPosts$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
-          _context7.prev = 0;
-          _context7.next = 3;
+          page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+
+          limit = parseInt(req.query.limit) || 10; // Default to 10 posts per page if not specified
+
+          skipIndex = (page - 1) * limit;
+          _context7.prev = 3;
+          _context7.next = 6;
           return regeneratorRuntime.awrap(_postModel["default"].find().populate('postedBy', 'username').sort({
             createdAt: -1
-          }));
+          }).limit(limit).skip(skipIndex));
 
-        case 3:
+        case 6:
           feedPosts = _context7.sent;
+          _context7.next = 9;
+          return regeneratorRuntime.awrap(_postModel["default"].countDocuments());
+
+        case 9:
+          totalPosts = _context7.sent;
+          // To check if more posts are available
+          hasMore = skipIndex + limit < totalPosts;
 
           if (!(feedPosts.length === 0)) {
-            _context7.next = 6;
+            _context7.next = 13;
             break;
           }
 
@@ -460,28 +472,28 @@ var getAllFeedPosts = function getAllFeedPosts(req, res) {
             message: "No posts found"
           }));
 
-        case 6:
-          // Return the posts if found
+        case 13:
           res.status(200).json({
             message: "Feed posts found",
-            feedPosts: feedPosts
+            feedPosts: feedPosts,
+            hasMore: hasMore
           });
-          _context7.next = 12;
+          _context7.next = 19;
           break;
 
-        case 9:
-          _context7.prev = 9;
-          _context7.t0 = _context7["catch"](0);
+        case 16:
+          _context7.prev = 16;
+          _context7.t0 = _context7["catch"](3);
           res.status(500).json({
             message: _context7.t0.message
           });
 
-        case 12:
+        case 19:
         case "end":
           return _context7.stop();
       }
     }
-  }, null, null, [[0, 9]]);
+  }, null, null, [[3, 16]]);
 };
 
 exports.getAllFeedPosts = getAllFeedPosts;
@@ -857,3 +869,113 @@ var getMovieId = function getMovieId(req, res) {
 };
 
 exports.getMovieId = getMovieId;
+
+var flagPost = function flagPost(req, res) {
+  var postId, post;
+  return regeneratorRuntime.async(function flagPost$(_context14) {
+    while (1) {
+      switch (_context14.prev = _context14.next) {
+        case 0:
+          _context14.prev = 0;
+          postId = req.params.id;
+          _context14.next = 4;
+          return regeneratorRuntime.awrap(_postModel["default"].findById(postId));
+
+        case 4:
+          post = _context14.sent;
+
+          if (post) {
+            _context14.next = 7;
+            break;
+          }
+
+          return _context14.abrupt("return", res.status(404).json({
+            message: "Post not found"
+          }));
+
+        case 7:
+          if (post.isFlagged) {
+            _context14.next = 10;
+            break;
+          }
+
+          _context14.next = 10;
+          return regeneratorRuntime.awrap(_postModel["default"].findOneAndUpdate({
+            _id: postId
+          }, {
+            isFlagged: true
+          }));
+
+        case 10:
+          res.status(200).json({
+            message: "Post flagged successfully"
+          });
+          _context14.next = 17;
+          break;
+
+        case 13:
+          _context14.prev = 13;
+          _context14.t0 = _context14["catch"](0);
+          console.error(_context14.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 17:
+        case "end":
+          return _context14.stop();
+      }
+    }
+  }, null, null, [[0, 13]]);
+};
+
+exports.flagPost = flagPost;
+
+var getComments = function getComments(req, res) {
+  var postId, post;
+  return regeneratorRuntime.async(function getComments$(_context15) {
+    while (1) {
+      switch (_context15.prev = _context15.next) {
+        case 0:
+          _context15.prev = 0;
+          postId = req.params.postId;
+          _context15.next = 4;
+          return regeneratorRuntime.awrap(_postModel["default"].findById(postId));
+
+        case 4:
+          post = _context15.sent;
+
+          if (post) {
+            _context15.next = 7;
+            break;
+          }
+
+          return _context15.abrupt("return", res.status(404).json({
+            message: "Post not found"
+          }));
+
+        case 7:
+          // If the post is found, send back the 'replies' array
+          res.status(200).json({
+            comments: post.replies
+          });
+          _context15.next = 14;
+          break;
+
+        case 10:
+          _context15.prev = 10;
+          _context15.t0 = _context15["catch"](0);
+          console.error(_context15.t0);
+          res.status(500).json({
+            message: "Server error"
+          });
+
+        case 14:
+        case "end":
+          return _context15.stop();
+      }
+    }
+  }, null, null, [[0, 10]]);
+};
+
+exports.getComments = getComments;

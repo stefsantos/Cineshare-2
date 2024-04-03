@@ -175,21 +175,30 @@ const replyToPost = async (req, res) => {
 };
 
 const getAllFeedPosts = async (req, res) => {
-    try {
-        // Fetch all posts from the database, sorted by createdAt in descending order (most recent first)
-        const feedPosts = await Post.find().populate('postedBy', 'username').sort({createdAt: -1});
+    const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+    const limit = parseInt(req.query.limit) || 10; // Default to 10 posts per page if not specified
+    const skipIndex = (page - 1) * limit;
 
-        // Check if there are posts available
+    try {
+        const feedPosts = await Post.find()
+            .populate('postedBy', 'username')
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .skip(skipIndex);
+
+        const totalPosts = await Post.countDocuments(); // To check if more posts are available
+        const hasMore = skipIndex + limit < totalPosts;
+
         if (feedPosts.length === 0) {
-            return res.status(404).json({message: "No posts found"});
+            return res.status(404).json({ message: "No posts found" });
         }
 
-        // Return the posts if found
-        res.status(200).json({message: "Feed posts found", feedPosts});
+        res.status(200).json({ message: "Feed posts found", feedPosts, hasMore });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 const getFriendFeedPosts = async (req, res) => {
     try {

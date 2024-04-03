@@ -5,13 +5,19 @@ import { Link } from 'react-router-dom';
 
 function HomePage() {
     const [posts, setPosts] = useState([]);
-    const [currentFilter, setCurrentFilter] = useState('all'); // State to track current filter
+    const [currentFilter, setCurrentFilter] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Fetch posts based on the current filter
+        // Reset pagination and posts when changing filter
+        setPosts([]);
+        setCurrentPage(1);
+        setHasMore(true);
+
         if (currentFilter === 'all') {
             fetchAllPosts();
         } else {
@@ -20,15 +26,20 @@ function HomePage() {
         fetchTrendingMovies();
     }, [currentFilter]); // Re-fetch posts when the currentFilter changes
 
-    const fetchAllPosts = async () => {
+    const fetchAllPosts = async (page = currentPage) => {
         setLoading(true);
         try {
-            const response = await fetch('/api/posts/allfeed');
+            const response = await fetch(`/api/posts/allfeed?page=${page}&limit=10`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            setPosts(data.feedPosts);
+            if (page > 1) {
+                setPosts(prev => [...prev, ...data.feedPosts]);
+            } else {
+                setPosts(data.feedPosts);
+            }
+            setHasMore(data.hasMore); // Adjust based on your API
             console.log(data);
         } catch (error) {
             console.error("Error fetching posts:", error);
@@ -38,15 +49,20 @@ function HomePage() {
         }
     };
 
-    const fetchFriendPosts = async () => {
+    const fetchFriendPosts = async (page = currentPage) => {
         setLoading(true);
         try {
-            const response = await fetch('/api/posts/friendfeed'); // Adjust the URL to your friend feed endpoint
+            const response = await fetch(`/api/posts/friendfeed?page=${page}&limit=10`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            setPosts(data.feedPosts); // Adjust this based on your API response structure
+            if (page > 1) {
+                setPosts(prev => [...prev, ...data.feedPosts]);
+            } else {
+                setPosts(data.feedPosts);
+            }
+            setHasMore(data.hasMore); // Adjust based on your API
             console.log(data);
         } catch (error) {
             console.error("Error fetching friend posts:", error);
@@ -66,6 +82,16 @@ function HomePage() {
             setTrendingMovies(data.results);
         } catch (error) {
             console.error("Error fetching trending movies:", error);
+        }
+    };
+
+    const loadMorePosts = () => {
+        const nextPage = currentPage + 1;
+        setCurrentPage(nextPage);
+        if (currentFilter === 'all') {
+            fetchAllPosts(nextPage);
+        } else {
+            fetchFriendPosts(nextPage);
         }
     };
 
@@ -95,7 +121,7 @@ function HomePage() {
                                 <p>Loading posts...</p>
                             ) : (
                                 (currentFilter !== 'all' && posts.length <= 0) ? (
-                                    <p>Following have not posted.</p>
+                                    <p>You are not following anyone that has posted.</p>
                                 ) : (
                                     posts && posts.length > 0 ? (
                                         posts.map((post, index) => (
@@ -114,6 +140,11 @@ function HomePage() {
                                         <p>No posts to display.</p>
                                     )
                                 )
+                            )}
+                            {hasMore && (
+                                <button onClick={loadMorePosts} className="load-more">
+                                    Load More
+                                </button>
                             )}
                         </div>
                         <div className='rightsidebar'>
