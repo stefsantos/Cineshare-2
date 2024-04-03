@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _userModel = _interopRequireDefault(require("../models/userModel.js"));
+var _usermodel = _interopRequireDefault(require("../models/usermodel.js"));
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
@@ -32,7 +32,7 @@ var protectRoute = function protectRoute(req, res, next) {
         case 4:
           decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
           _context.next = 7;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(decoded.userid).select("-password"));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(decoded._id).select("-password"));
 
         case 7:
           user = _context.sent;

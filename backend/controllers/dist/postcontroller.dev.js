@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.deleteComment = exports.getComments = exports.flagPost = exports.getMovieId = exports.getLikeStatus = exports.getLikeCount = exports.updatePost = exports.getUserPosts = exports.getFriendFeedPosts = exports.getAllFeedPosts = exports.replyToPost = exports.likeUnlikePost = exports.deletePost = exports.getPost = exports.createPost = exports.uploadPostImage = void 0;
 
-var _userModel = _interopRequireDefault(require("../models/userModel.js"));
+var _usermodel = _interopRequireDefault(require("../models/usermodel.js"));
 
 var _postModel = _interopRequireDefault(require("../models/postModel.js"));
 
@@ -98,7 +98,7 @@ var createPost = function createPost(req, res) {
 
         case 4:
           _context2.next = 6;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(req.user._id));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(req.user._id));
 
         case 6:
           user = _context2.sent;
@@ -508,7 +508,7 @@ var getFriendFeedPosts = function getFriendFeedPosts(req, res) {
           userId = req.user._id; // Retrieve the logged-in user's following list. Make sure the following field is indexed.
 
           _context8.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(userId).select('following'));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(userId).select('following'));
 
         case 4:
           user = _context8.sent;
@@ -581,7 +581,7 @@ var getUserPosts = function getUserPosts(req, res) {
           username = req.params.username; // Or use userID based on your preference
 
           _context9.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findOne({
+          return regeneratorRuntime.awrap(_usermodel["default"].findOne({
             username: username
           }));
 

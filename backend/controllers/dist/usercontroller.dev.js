@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.deleteFromFavoriteMovies = exports.getFavoriteMovies = exports.checkFavoriteMovies = exports.addToFavoriteMovies = exports.deleteFromWatchlist = exports.getWatchlist = exports.checkWatchlist = exports.addToWatchlist = exports.updateUser = exports.followUnfollowUser = exports.logoutUser = exports.loginUser = exports.signupUser = exports.getUserFollowing = exports.getUserFollowers = exports.getUserProfile = exports.uploadBanner = exports.uploadProfilePic = void 0;
 
-var _userModel = _interopRequireDefault(require("../models/userModel.js"));
+var _usermodel = _interopRequireDefault(require("../models/usermodel.js"));
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
@@ -24,7 +24,7 @@ var getUserProfile = function getUserProfile(req, res) {
           username = req.params.username;
           _context.prev = 1;
           _context.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findOne({
+          return regeneratorRuntime.awrap(_usermodel["default"].findOne({
             username: username
           }).select("-password").select("-updatedAt"));
 
@@ -72,7 +72,7 @@ var getUserFollowers = function getUserFollowers(req, res) {
           username = req.params.username;
           _context2.prev = 1;
           _context2.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findOne({
+          return regeneratorRuntime.awrap(_usermodel["default"].findOne({
             username: username
           }).select("-password -updatedAt"));
 
@@ -90,7 +90,7 @@ var getUserFollowers = function getUserFollowers(req, res) {
 
         case 7:
           _context2.next = 9;
-          return regeneratorRuntime.awrap(_userModel["default"].find({
+          return regeneratorRuntime.awrap(_usermodel["default"].find({
             _id: {
               $in: user.followers
             }
@@ -129,7 +129,7 @@ var getUserFollowing = function getUserFollowing(req, res) {
           username = req.params.username;
           _context3.prev = 1;
           _context3.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findOne({
+          return regeneratorRuntime.awrap(_usermodel["default"].findOne({
             username: username
           }).select("-password -updatedAt"));
 
@@ -147,7 +147,7 @@ var getUserFollowing = function getUserFollowing(req, res) {
 
         case 7:
           _context3.next = 9;
-          return regeneratorRuntime.awrap(_userModel["default"].find({
+          return regeneratorRuntime.awrap(_usermodel["default"].find({
             _id: {
               $in: user.following
             }
@@ -188,7 +188,7 @@ var signupUser = function signupUser(req, res) {
           _req$body = req.body, username = _req$body.username, email = _req$body.email, password = _req$body.password; // Corrected: Use 'User' instead of 'user' for the model variable to match the import and avoid case sensitivity issues
 
           _context4.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findOne({
+          return regeneratorRuntime.awrap(_usermodel["default"].findOne({
             $or: [{
               email: email
             }, {
@@ -220,7 +220,7 @@ var signupUser = function signupUser(req, res) {
         case 12:
           hashedPassword = _context4.sent;
           // Corrected: Use 'User' to create a new instance
-          newUser = new _userModel["default"]({
+          newUser = new _usermodel["default"]({
             username: username,
             email: email,
             password: hashedPassword // profilepic, followers, following, bio - Assuming these are part of your User model, ensure they are handled appropriately (either by setting defaults in the model or including them here if they are being passed in the request)
@@ -275,7 +275,7 @@ var loginUser = function loginUser(req, res) {
           _context5.prev = 0;
           _req$body2 = req.body, email = _req$body2.email, password = _req$body2.password;
           _context5.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findOne({
+          return regeneratorRuntime.awrap(_usermodel["default"].findOne({
             email: email
           }));
 
@@ -380,12 +380,12 @@ var followUnfollowUser = function followUnfollowUser(req, res) {
           _context7.prev = 0;
           id = req.params.id;
           _context7.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(id));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(id));
 
         case 4:
           userToModify = _context7.sent;
           _context7.next = 7;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(req.user._id));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(req.user._id));
 
         case 7:
           currentUser = _context7.sent;
@@ -418,7 +418,7 @@ var followUnfollowUser = function followUnfollowUser(req, res) {
           }
 
           _context7.next = 16;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(req.user._id, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(req.user._id, {
             $pull: {
               following: id
             }
@@ -426,7 +426,7 @@ var followUnfollowUser = function followUnfollowUser(req, res) {
 
         case 16:
           _context7.next = 18;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(id, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(id, {
             $pull: {
               followers: req.user._id
             }
@@ -441,7 +441,7 @@ var followUnfollowUser = function followUnfollowUser(req, res) {
 
         case 21:
           _context7.next = 23;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(req.user._id, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(req.user._id, {
             $push: {
               following: id
             }
@@ -449,7 +449,7 @@ var followUnfollowUser = function followUnfollowUser(req, res) {
 
         case 23:
           _context7.next = 25;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(id, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(id, {
             $push: {
               followers: req.user._id
             }
@@ -493,7 +493,7 @@ var updateUser = function updateUser(req, res) {
           _req$body3 = req.body, username = _req$body3.username, email = _req$body3.email, password = _req$body3.password, profilepic = _req$body3.profilepic, banner = _req$body3.banner, bio = _req$body3.bio, watchlist = _req$body3.watchlist, favMovies = _req$body3.favMovies;
           userId = req.user._id;
           _context8.next = 5;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(userId));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(userId));
 
         case 5:
           user = _context8.sent;
@@ -587,7 +587,7 @@ var addToWatchlist = function addToWatchlist(req, res) {
           // Using $addToSet to avoid duplicate movieIds in the watchlist
 
           _context9.next = 7;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(userId, {
             $addToSet: {
               watchlist: movieId
             }
@@ -648,7 +648,7 @@ var checkWatchlist = function checkWatchlist(req, res) {
           userId = req.user._id; // Assuming you have middleware to set req.user
 
           _context10.next = 5;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(userId));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(userId));
 
         case 5:
           user = _context10.sent;
@@ -701,7 +701,7 @@ var getWatchlist = function getWatchlist(req, res) {
           // Find the user by their ID
 
           _context11.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(userId).select('watchlist'));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(userId).select('watchlist'));
 
         case 4:
           user = _context11.sent;
@@ -762,7 +762,7 @@ var deleteFromWatchlist = function deleteFromWatchlist(req, res) {
 
         case 5:
           _context12.next = 7;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(userId, {
             $pull: {
               watchlist: movieId
             }
@@ -834,7 +834,7 @@ var addToFavoriteMovies = function addToFavoriteMovies(req, res) {
           // Using $addToSet to avoid duplicate movieIds in the favorite movies list
 
           _context13.next = 7;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(userId, {
             $addToSet: {
               favMovies: movieId
             }
@@ -895,7 +895,7 @@ var checkFavoriteMovies = function checkFavoriteMovies(req, res) {
           userId = req.user._id; // Assuming you have middleware to set req.user
 
           _context14.next = 5;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(userId));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(userId));
 
         case 5:
           user = _context14.sent;
@@ -948,7 +948,7 @@ var getFavoriteMovies = function getFavoriteMovies(req, res) {
           // Find the user by their ID
 
           _context15.next = 4;
-          return regeneratorRuntime.awrap(_userModel["default"].findById(userId).select('favMovies'));
+          return regeneratorRuntime.awrap(_usermodel["default"].findById(userId).select('favMovies'));
 
         case 4:
           user = _context15.sent;
@@ -1009,7 +1009,7 @@ var deleteFromFavoriteMovies = function deleteFromFavoriteMovies(req, res) {
 
         case 5:
           _context16.next = 7;
-          return regeneratorRuntime.awrap(_userModel["default"].findByIdAndUpdate(userId, {
+          return regeneratorRuntime.awrap(_usermodel["default"].findByIdAndUpdate(userId, {
             $pull: {
               favMovies: movieId
             }
