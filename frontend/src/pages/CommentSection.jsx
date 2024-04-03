@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import './CommentSection.css';
-
+import { useUser } from '../../src/UserContext';
 
 const CommentSection = ({ post }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [error, setError] = useState('');
+  const { activeusername } = useUser();
 
   const handleInputChange = (e) => {
     setNewComment(e.target.value);
   };
 
-  const removeComment = async (commentId) => {
-    try {
-        const response = await fetch(`/api/comments/${commentId}`, {
-          method: 'DELETE',
-          headers: {
-              'Content-Type': 'application/json',
-              "Authorization": `Bearer ${localStorage.getItem('token')}`,
-          },
+const removeComment = async (commentId) => {
+  try {
+      console.log(commentId);
+      if(!window.confirm('Are you sure you want to delete this comment?')) return;
+      const response = await fetch(`/api/posts/comments/delete/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
       });
 
-        if (!response.ok) {
-            const errorData = await response.json(); 
-            throw new Error(errorData.message || "An error occurred while deleting the comment.");
-        }
+      if (!response.ok) {
+          const errorData = await response.json(); 
+          throw new Error(errorData.message || "An error occurred while deleting the comment.");
+      }
 
-        
-        setComments(currentComments => currentComments.filter(comment => comment._id !== commentId));
-    } catch (error) {
-        console.error('Error deleting comment:', error);
-    }
+      setComments(currentComments => currentComments.filter(comment => comment._id !== commentId));
+  } catch (error) {
+      console.error('Error deleting comment:', error);
+  }
 };
-
-
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -56,13 +55,12 @@ const CommentSection = ({ post }) => {
   
       const data = await response.json(); 
       setComments(prevComments => [...prevComments, data]); 
-      setNewComment(''); // Reset the input field
+      setNewComment(''); 
     } catch (error) {
       console.error('Error submitting comment:', error);
     }
   };
   
-  // In CommentSection component
   useEffect(() => {
     const fetchComments = async () => {
       try {
@@ -109,7 +107,9 @@ const CommentSection = ({ post }) => {
           comment && comment.text ? (
             <div key={comment._id} className="comment-item">
               <span className="comment-text"><span className="comment-username">{comment.username}</span>: {comment.text}</span>
-              <button onClick={() => removeComment(comment._id)} className="delete-comment">&#x1F5D1;</button>
+              {(comment.username === activeusername || activeusername === "admin123") && (
+                <button onClick={() => removeComment(comment._id)} className="delete-comment">&#x1F5D1;</button>
+              )}
             </div>
           ) : null
         ))

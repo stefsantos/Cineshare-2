@@ -38,7 +38,7 @@ router.get('/likes/status/:id', protectRoute, getLikeStatus);
 router.get('/movie/:movieId', protectRoute, getMovieId);
 router.post('/flag/:id', protectRoute, flagPost);
 router.get('/comments/:id', protectRoute, getComments);
-router.delete('/comments/":id"', protectRoute, deleteComment);
+router.delete('/comments/delete/:commentId', protectRoute, deleteComment);
 
 router.put('/:id', protectRoute, updatePost);
 
