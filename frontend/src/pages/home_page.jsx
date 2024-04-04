@@ -129,6 +129,10 @@ function HomePage() {
                             <button onClick={() => setCurrentFilter('popular')} className={currentFilter === 'friends' ? 'active' : ''}>
                                 Most Popular
                             </button>
+
+                            <button onClick={() => setCurrentFilter('all')} className={currentFilter === 'all' ? 'active' : ''}>
+                                Most Recent
+                            </button>
                         </div>
                         {loading ? (
                             <p>Loading posts...</p>
