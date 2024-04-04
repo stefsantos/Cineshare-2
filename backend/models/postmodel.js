@@ -26,10 +26,6 @@ const postSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
-    dislikes: {
-        type: [String],
-        default: []
-    },
     isFlagged: {
         type: Boolean,
         default: false

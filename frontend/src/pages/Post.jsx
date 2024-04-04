@@ -13,24 +13,7 @@ function Post({ post }) {
     const [likeCount, setLikeCount] = useState(post.likes?.length ?? 0);
     const [editMode, setEditMode] = useState(false);
     const [editedContent, setEditedContent] = useState(post.content);
-    const [isDislikeActive, setIsDislikeActive] = useState(false);
-    const [dislikeCount, setDislikeCount] = useState(post.dislikes?.length ?? 0);
-    
-    useEffect(() => {
-        setIsHeartActive(post.likes?.includes(activeusername));
-        setIsDislikeActive(post.dislikes?.includes(activeusername));
-        fetchLikeCount();
-        fetchDislikeCount();
-    
-        const likeStatusInterval = setInterval(fetchLikeStatus, 1000);
-    
-        const dislikeStatusInterval = setInterval(fetchDislikeStatus, 1000);
-    
-        return () => {
-            clearInterval(likeStatusInterval);
-            clearInterval(dislikeStatusInterval);
-        };
-    }, [post.likes, post.dislikes, activeusername, post._id]);
+
     
 
     const fetchLikeStatus = async () => {
@@ -51,23 +34,6 @@ function Post({ post }) {
         }
     };
     
-    const fetchDislikeStatus = async () => {
-        try {
-            const response = await fetch(`/api/posts/dislikes/status/${post._id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            if (!response.ok) {
-                throw new Error('Failed to fetch dislike status');
-            }
-            const data = await response.json();
-            setIsDislikeActive(data.isDisliked);
-        } catch (error) {
-            console.error('Error fetching dislike status:', error);
-        }
-    };
 
     const fetchLikeCount = async () => {
         try {
@@ -85,46 +51,6 @@ function Post({ post }) {
             }
         } catch (error) {
             console.error('Error fetching like count:', error);
-        }
-    };
-
-    const fetchDislikeCount = async () => {
-        try {
-            const response = await fetch(`/api/posts/dislikes/count/${post._id}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            const data = await response.json();
-            if (response.ok) {
-                setDislikeCount(data.dislikeCount);
-            } else {
-                throw new Error('Failed to fetch dislike count');
-            }
-        } catch (error) {
-            console.error('Error fetching dislike count:', error);
-        }
-    };
-
-    const toggleDislike = async () => {
-        try {
-            const res = await fetch("/api/posts/dislike/" + post._id, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
-                },
-            });
-            const data = await res.json();
-            if (data.error) {
-                console.error("Error toggling dislike:", data.error);
-                return;
-            }
-            fetchDislikeStatus();
-            fetchDislikeCount(); 
-        } catch (error) {
-            console.error("Error toggling dislike:", error);
         }
     };
     
@@ -248,6 +174,17 @@ function Post({ post }) {
             console.error('Error editing post:', error);
         }
     };
+
+    useEffect(() => {
+        setIsHeartActive(post.likes?.includes(activeusername));
+        fetchLikeCount();
+    
+        const likeStatusInterval = setInterval(fetchLikeStatus, 1000);
+    
+        return () => {
+            clearInterval(likeStatusInterval);
+        };
+    }, [post.likes, activeusername]);
     
     return (
         <div className = "post">
@@ -286,7 +223,6 @@ function Post({ post }) {
 
             <div className='postactions'>
                 <div className={`heart ${isHeartActive ? 'heart-active' : ''}`} onClick={toggleHeart}></div>
-                <div className={`dislike ${isDislikeActive ? 'dislike-active' : ''}`} onClick={toggleDislike}></div>
                 <div className='comment' onClick={toggleCommentsVisibility}></div>
                 {post.user === activeusername && (
                     <div className='edit' onClick={toggleEditMode}>
@@ -301,7 +237,6 @@ function Post({ post }) {
                 )}
             </div>
             <div className='like-counter'>{likeCount} {likeCount == 1 ? 'like' : 'likes'}</div>
-            <div className='dislike-counter'>{dislikeCount} {dislikeCount == 1 ? 'dislike' : 'dislikes'}</div>
             <small>{post.timestamp}</small>
             {showComments && <CommentSection post={post} />}
         </div>
