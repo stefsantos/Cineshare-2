@@ -120,15 +120,16 @@ function HomePage() {
                 <button onClick={() => setCurrentFilter('friends')} className={currentFilter === 'friends' ? 'active' : ''}>
                     Following Feed
                 </button>
-
-                <button onClick={() => setCurrentFilter('popular')} className={currentFilter === 'friends' ? 'active' : ''}>
-                    Most Popular
-                </button>
             </div>
             <div className='homepage'>
                 <center>
                     <div className='content'>
                     <div className='userposts'>
+                        <div className="filter-buttons">       
+                            <button onClick={() => setCurrentFilter('popular')} className={currentFilter === 'friends' ? 'active' : ''}>
+                                Most Popular
+                            </button>
+                        </div>
                         {loading ? (
                             <p>Loading posts...</p>
                         ) : (
