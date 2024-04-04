@@ -20,8 +20,10 @@ function HomePage() {
 
         if (currentFilter === 'all') {
             fetchAllPosts();
-        } else {
+        } else if (currentFilter === 'friends') {
             fetchFriendPosts();
+        } else {
+            fetchAllPosts();
         }
         fetchTrendingMovies();
     }, [currentFilter]); // Re-fetch posts when the currentFilter changes
@@ -39,7 +41,7 @@ function HomePage() {
             } else {
                 setPosts(data.feedPosts);
             }
-            setHasMore(data.hasMore); // Adjust based on your API
+            setHasMore(data.hasMore); 
             console.log(data);
         } catch (error) {
             console.error("Error fetching posts:", error);
@@ -62,7 +64,7 @@ function HomePage() {
             } else {
                 setPosts(data.feedPosts);
             }
-            setHasMore(data.hasMore); // Adjust based on your API
+            setHasMore(data.hasMore); 
             console.log(data);
         } catch (error) {
             console.error("Error fetching friend posts:", error);
@@ -94,11 +96,9 @@ function HomePage() {
     
         const fetchPosts = currentFilter === 'all' ? fetchAllPosts : fetchFriendPosts;
         fetchPosts(nextPage).then(() => {
-            // Wait for the DOM to update
             setTimeout(() => {
-                // Restore the scroll position
                 window.scrollTo(0, currentScrollPosition);
-            }, 100); // Adjust delay as needed
+            }, 100); 
         });
     };
     
@@ -120,16 +120,49 @@ function HomePage() {
                 <button onClick={() => setCurrentFilter('friends')} className={currentFilter === 'friends' ? 'active' : ''}>
                     Following Feed
                 </button>
+
+                <button onClick={() => setCurrentFilter('popular')} className={currentFilter === 'friends' ? 'active' : ''}>
+                    Most Popular
+                </button>
             </div>
             <div className='homepage'>
                 <center>
                     <div className='content'>
-                        <div className='userposts'>
-                            {loading ? (
-                                <p>Loading posts...</p>
+                    <div className='userposts'>
+                        {loading ? (
+                            <p>Loading posts...</p>
+                        ) : (
+                            (currentFilter !== 'all' && posts.length <= 0) ? (
+                                <p>You are not following anyone that has posted.</p>
                             ) : (
-                                (currentFilter !== 'all' && posts.length <= 0) ? (
-                                    <p>You are not following anyone that has posted.</p>
+                                currentFilter === 'popular' ? (
+                                    posts && posts.length > 0 ? (
+                                        posts
+                                            .slice() 
+                                            .sort((a, b) => b.likes.length - a.likes.length) 
+                                            .map((post, index) => (
+                                                <Post key={index} post={{
+                                                    _id: post._id,
+                                                    user: post.postedBy ? post.postedBy.username : 'deleteduser',
+                                                    movieId: post.movieId,
+                                                    movie: post.movie,
+                                                    content: post.content,
+                                                    imageUrl: post.imageUrl,
+                                                    timestamp: new Date(post.createdAt).toLocaleString('en-US', {
+                                                        month: 'short',
+                                                        day: '2-digit',
+                                                        year: 'numeric',
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        second: '2-digit',
+                                                        hour12: true,
+                                                    }),
+                                                    isFlagged: post.isFlagged
+                                                }} />
+                                            ))
+                                    ) : (
+                                        <p>No posts to display.</p>
+                                    )
                                 ) : (
                                     posts && posts.length > 0 ? (
                                         posts.map((post, index) => (
@@ -141,13 +174,13 @@ function HomePage() {
                                                 content: post.content,
                                                 imageUrl: post.imageUrl,
                                                 timestamp: new Date(post.createdAt).toLocaleString('en-US', {
-                                                    month: 'short', // "Jan", "Feb", "Mar", ...
-                                                    day: '2-digit', // "01", "02", ...
-                                                    year: 'numeric', // "2021", ...
-                                                    hour: '2-digit', // "01", "02", ...
-                                                    minute: '2-digit', // "01", "02", ...
-                                                    second: '2-digit', // "01", "02", ...
-                                                    hour12: true, // Use AM/PM
+                                                    month: 'short',
+                                                    day: '2-digit',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    second: '2-digit',
+                                                    hour12: true,
                                                 }),
                                                 isFlagged: post.isFlagged
                                             }} />
@@ -156,13 +189,15 @@ function HomePage() {
                                         <p>No posts to display.</p>
                                     )
                                 )
-                            )}
-                            {hasMore && (
-                                <button onClick={loadMorePosts} className="load-more-home-button">
-                                    Load More
-                                </button>
-                            )}
-                        </div>
+                            )
+                        )}
+                        {hasMore && (
+                            <button onClick={loadMorePosts} className="load-more-home-button">
+                                Load More
+                            </button>
+                        )}
+                    </div>
+
                         <div className='rightsidebar'>
                             <div className='sidetitle'>🔥Popular Movies</div>
                             <div className='sidebarcontent'>
